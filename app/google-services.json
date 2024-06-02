@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1055455271208",
+    "project_id": "chat-ui-app-a05e8",
+    "storage_bucket": "chat-ui-app-a05e8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1055455271208:android:232bdd3372bc83e428d81d",
+        "android_client_info": {
+          "package_name": "com.dedsec.chatuiapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZj95-DxtH-OsJ1IaT3DNkq1AA4OHzovI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
