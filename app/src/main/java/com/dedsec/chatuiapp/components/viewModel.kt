@@ -20,12 +20,15 @@ class viewModel @Inject constructor(
 
     var inProgress = mutableStateOf(false)
     var eventMutableState = mutableStateOf<Event<String>?>(null)
+    var signIn = mutableStateOf(false)
 
     fun signUp(name: String,phonenumer:String, email: String, password: String){
         inProgress.value = true
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
+                    signIn.value = true
+                    createOrUpdateProfile()
                     Log.i("Hello", "Success")
                 } else {
                     // Handle unsuccessful sign-up
@@ -34,6 +37,10 @@ class viewModel @Inject constructor(
             .addOnFailureListener { exception ->
                 Log.i("Hello", "Failed $email h")
             }
+    }
+
+    private fun createOrUpdateProfile() {
+
     }
 
 }
