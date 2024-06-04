@@ -39,4 +39,8 @@ fun GreetingPreview() {
     }
 }
 
+<<<<<<< Updated upstream
 // jivesh
+=======
+// hell
+>>>>>>> Stashed changes
