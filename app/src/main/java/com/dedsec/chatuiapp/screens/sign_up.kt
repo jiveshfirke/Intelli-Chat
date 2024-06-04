@@ -1,5 +1,6 @@
 package com.dedsec.chatuiapp.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -11,8 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -24,9 +27,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -35,6 +42,7 @@ import androidx.navigation.NavHostController
 import com.dedsec.chatuiapp.R
 import com.dedsec.chatuiapp.components.ProgressionBar
 import com.dedsec.chatuiapp.components.viewModel
+import com.dedsec.chatuiapp.navigation.Home
 import com.dedsec.chatuiapp.navigation.Login
 import com.dedsec.chatuiapp.navigation.SignUp
 
@@ -43,6 +51,8 @@ fun SignUpScreen(
     navHostController: NavHostController,
     vm: viewModel
 ){
+
+    val context = LocalContext.current
     var name by remember {
         mutableStateOf("")
     }
@@ -57,6 +67,23 @@ fun SignUpScreen(
 
     var password by remember {
         mutableStateOf("")
+    }
+
+    var isPasswordVisible by remember {
+        mutableStateOf(false)
+    }
+
+    fun checkForCompleteInformation(name: String, phonenumber: String, email: String, password: String){
+        if (name.isEmpty() || phonenumber.isEmpty() || email.isEmpty() || password.isEmpty() || phonenumber.length != 10 || password.length <= 5){
+            Log.i("Sign up function", "Incomplete information")
+            Toast.makeText(context, "Please fill complete information", Toast.LENGTH_LONG).show()
+            return
+        }else{
+            vm.signUp(name = name, phonenumber = phonenumber, email = email, password = password)
+            navHostController.navigate(Home){
+                popUpTo(0)
+            }
+        }
     }
 
     Box(
@@ -95,7 +122,7 @@ fun SignUpScreen(
 
             TextField(
                 value = phonenumber,
-                onValueChange = { phonenumber = it},
+                onValueChange = { phonenumber = it },
                 shape = RoundedCornerShape(100),
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
@@ -105,12 +132,13 @@ fun SignUpScreen(
                 placeholder = {
                     Text(text = "Enter your phone number")
                 },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             TextField(
-                value =email,
+                value = email,
                 onValueChange = { email = it},
                 shape = RoundedCornerShape(100),
                 colors = TextFieldDefaults.colors(
@@ -121,6 +149,7 @@ fun SignUpScreen(
                 placeholder = {
                     Text(text = "Enter your email")
                 },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
@@ -137,19 +166,30 @@ fun SignUpScreen(
                 placeholder = {
                     Text(text = "Enter your password")
                 },
+                visualTransformation = if(isPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+                trailingIcon = {
+                    if (isPasswordVisible){
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_visibility_off_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clickable { isPasswordVisible = false }
+                        )
+                    }else{
+                        Icon(
+                            painter = painterResource(id = R.drawable.baseline_visibility_24),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .clickable { isPasswordVisible = true }
+                        )
+                    }
+                }
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             Button(
-                onClick = {
-                    vm.signUp(
-                        name,
-                        phonenumber,
-                        email,
-                        password
-                    )
-                }
+                onClick = { checkForCompleteInformation(name, phonenumber, email, password) }
             ) {
                 Text(text = "Sign up")
             }

@@ -27,10 +27,12 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Divider
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -51,12 +53,14 @@ import com.dedsec.chatuiapp.data.Chat
 import com.dedsec.chatuiapp.data.Person
 import com.dedsec.chatuiapp.data.personList
 import com.dedsec.chatuiapp.navigation.Chat
+import com.dedsec.chatuiapp.navigation.Start
 
 @Composable
 fun HomeScreen(
     navHostController: NavHostController,
     vm: viewModel
 ) {
+    Log.i("Hello", "HomeScreen:")
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -101,14 +105,29 @@ fun HomeScreen(
                             UserRow(person = it){
                                 navHostController.currentBackStackEntry?.savedStateHandle?.set("data", it)
                                 navHostController.navigate(Chat)
-                                Log.i("Hello", "HomeScreen:}")
                             }
                         }
                     }
 
-                    val dd = WindowInsets.displayCutout
                 }
             }
+        }
+
+        IconButton(
+            onClick = {
+                      vm.signOut()
+                navHostController.navigate(Start){
+                    popUpTo(0)
+                }
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+        ) {
+            Icon(
+                imageVector = Icons.Default.AccountBox,
+                contentDescription = null,
+                tint = Color.White,
+            )
         }
     }
 }

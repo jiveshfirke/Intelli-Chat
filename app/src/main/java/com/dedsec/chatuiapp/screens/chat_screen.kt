@@ -46,7 +46,7 @@ fun ChatScreen(
     vm: viewModel
 ) {
     var message = remember { mutableStateOf("") }
-    val person = navHostController.previousBackStackEntry!!.savedStateHandle.get<Person>("data") ?: Person()
+    val person = navHostController.previousBackStackEntry?.savedStateHandle?.get<Person>("data") ?: Person()
 
     Column(
         modifier = Modifier
@@ -73,7 +73,7 @@ fun ChatScreen(
 
             Spacer(modifier = Modifier.width(5.dp))
 
-            Image(painter = painterResource(id = person!!.icon), contentDescription = "Person picture", modifier = Modifier.size(42.dp))
+            Image(painter = painterResource(id = person.icon), contentDescription = "Person picture", modifier = Modifier.size(42.dp))
 
             Spacer(modifier = Modifier.width(10.dp))
 

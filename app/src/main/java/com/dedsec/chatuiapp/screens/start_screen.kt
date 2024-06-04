@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.dedsec.chatuiapp.R
+import com.dedsec.chatuiapp.components.CheckSignedIn
 import com.dedsec.chatuiapp.components.viewModel
 import com.dedsec.chatuiapp.navigation.Home
 import com.dedsec.chatuiapp.navigation.Login
@@ -44,6 +45,7 @@ fun StartScreen(
     navHostController: NavHostController,
     vm: viewModel
 ) {
+    CheckSignedIn(vm = vm, navHostController = navHostController)
     Box(
         modifier = Modifier
             .fillMaxSize()
