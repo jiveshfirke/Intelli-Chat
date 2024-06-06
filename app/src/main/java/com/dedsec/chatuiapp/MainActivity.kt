@@ -15,6 +15,8 @@ import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.dedsec.chatuiapp.components.viewModel
 import com.dedsec.chatuiapp.navigation.MainNavigation
+import com.dedsec.chatuiapp.screens.Login_Screen
+import com.dedsec.chatuiapp.screens.ProfileScreen
 import com.dedsec.chatuiapp.ui.theme.ChatUIAppTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -25,7 +27,9 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ChatUIAppTheme {
-                MainNavigation()
+//                MainNavigation()
+//                Login_Screen()
+                ProfileScreen()
             }
         }
     }
@@ -39,8 +43,6 @@ fun GreetingPreview() {
     }
 }
 
-<<<<<<< Updated upstream
+
 // jivesh
-=======
-// hell
->>>>>>> Stashed changes
+
