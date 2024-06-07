@@ -8,11 +8,11 @@ plugins {
 }
 
 android {
-    namespace = "com.dedsec.chatuiapp"
+    namespace = "com.dedsec.intellichat"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.dedsec.chatuiapp"
+        applicationId = "com.dedsec.intellichat"
         minSdk = 24
         targetSdk = 34
         versionCode = 1
@@ -68,10 +68,11 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation(libs.coil.kt.coil.compose)
     implementation(libs.androidx.material3)
     implementation(libs.firebase.auth)
     implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

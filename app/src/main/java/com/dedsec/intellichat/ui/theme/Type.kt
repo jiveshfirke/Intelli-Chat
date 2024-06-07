@@ -1,4 +1,4 @@
-package com.dedsec.chatuiapp.ui.theme
+package com.dedsec.intellichat.ui.theme
 
 import androidx.annotation.FontRes
 import androidx.compose.material3.Typography
@@ -7,7 +7,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
-import com.dedsec.chatuiapp.R
+import com.dedsec.intellichat.R
 
 // Set of Material typography styles to start with
 val Typography = Typography(

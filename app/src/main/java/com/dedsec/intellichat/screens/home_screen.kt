@@ -1,6 +1,5 @@
-package com.dedsec.chatuiapp.screens
+package com.dedsec.intellichat.screens
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -10,14 +9,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.WindowInsets
-import androidx.compose.foundation.layout.displayCutout
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContentPadding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,14 +22,16 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.Divider
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -48,19 +45,22 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.dedsec.chatuiapp.components.viewModel
-import com.dedsec.chatuiapp.data.Chat
-import com.dedsec.chatuiapp.data.Person
-import com.dedsec.chatuiapp.data.personList
-import com.dedsec.chatuiapp.navigation.Chat
-import com.dedsec.chatuiapp.navigation.Start
+import com.dedsec.intellichat.components.viewModel
+import com.dedsec.intellichat.data.Person
+import com.dedsec.intellichat.data.personList
+import com.dedsec.intellichat.navigation.Chat
+import com.dedsec.intellichat.navigation.Profile
+import com.dedsec.intellichat.navigation.Start
 
 @Composable
 fun HomeScreen(
     navHostController: NavHostController,
     vm: viewModel
 ) {
-    Log.i("Hello", "HomeScreen:")
+    val isVisible = remember {
+        mutableStateOf(false)
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -113,21 +113,41 @@ fun HomeScreen(
             }
         }
 
-        IconButton(
-            onClick = {
-                      vm.signOut()
-                navHostController.navigate(Start){
-                    popUpTo(0)
-                }
-            },
+        Column(
             modifier = Modifier
                 .align(Alignment.TopEnd)
         ) {
             Icon(
-                imageVector = Icons.Default.AccountBox,
+                imageVector = Icons.Default.MoreVert,
                 contentDescription = null,
                 tint = Color.White,
+                modifier = Modifier
+                    .clickable {
+                        isVisible.value = !isVisible.value
+                    }
             )
+            DropdownMenu(
+                expanded = isVisible.value,
+                onDismissRequest = { isVisible.value = !isVisible.value},
+                modifier = Modifier,
+
+            ){
+                DropdownMenuItem(
+                    text = { Text(text = "Profile")},
+                    onClick = {
+                        navHostController.navigate(Profile)
+                    }
+                )
+                DropdownMenuItem(
+                    text = { Text(text = "Logout")},
+                    onClick = {
+                        vm.signOut()
+                        navHostController.navigate(Start){
+                            popUpTo(0)
+                        }
+                    }
+                )
+            }
         }
     }
 }

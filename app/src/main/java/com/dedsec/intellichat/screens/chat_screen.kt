@@ -1,4 +1,4 @@
-package com.dedsec.chatuiapp.screens
+package com.dedsec.intellichat.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
-import androidx.compose.material3.TextFieldColors
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -36,9 +35,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.dedsec.chatuiapp.R
-import com.dedsec.chatuiapp.components.viewModel
-import com.dedsec.chatuiapp.data.Person
+import com.dedsec.intellichat.R
+import com.dedsec.intellichat.components.viewModel
+import com.dedsec.intellichat.data.Person
 
 @Composable
 fun ChatScreen(

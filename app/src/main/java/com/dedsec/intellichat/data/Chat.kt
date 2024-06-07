@@ -1,4 +1,4 @@
-package com.dedsec.chatuiapp.data
+package com.dedsec.intellichat.data
 
 
 data class Chat(

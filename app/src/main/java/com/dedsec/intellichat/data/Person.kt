@@ -1,9 +1,9 @@
-package com.dedsec.chatuiapp.data
+package com.dedsec.intellichat.data
 
 
 import android.os.Parcelable
 import androidx.annotation.DrawableRes
-import com.dedsec.chatuiapp.R
+import com.dedsec.intellichat.R
 import kotlinx.parcelize.Parcelize
 
 @Parcelize

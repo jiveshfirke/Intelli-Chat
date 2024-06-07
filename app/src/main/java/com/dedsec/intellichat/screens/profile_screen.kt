@@ -1,6 +1,8 @@
-package com.dedsec.chatuiapp.screens
+package com.dedsec.intellichat.screens
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
@@ -27,10 +30,8 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -39,20 +40,18 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.dedsec.chatuiapp.R
-import com.dedsec.chatuiapp.components.viewModel
-import com.dedsec.chatuiapp.navigation.Login
-import com.dedsec.chatuiapp.navigation.SignUp
-import com.dedsec.chatuiapp.ui.theme.appNameFont
-import com.dedsec.chatuiapp.ui.theme.welcomeFont
+import coil.compose.rememberAsyncImagePainter
+import com.dedsec.intellichat.R
+import com.dedsec.intellichat.components.ProgressionBar
+import com.dedsec.intellichat.components.viewModel
+import com.dedsec.intellichat.ui.theme.appNameFont
+import com.dedsec.intellichat.ui.theme.welcomeFont
 
-@Preview(showBackground = true, showSystemUi = true)
 @Composable
-fun ProfileScreen() {
+fun ProfileScreen(navHostController: NavHostController, vm: viewModel) {
     val status = rememberSaveable {
         mutableStateOf("")
     }
@@ -62,34 +61,45 @@ fun ProfileScreen() {
         ).show()
         status.value = ""
     }
+    val imageurl = vm.userData.value?.imageUrl
+    val userData = vm.userData.value
+    val name = rememberSaveable {
+        mutableStateOf(userData?.name ?: "")
+    }
+    val number = rememberSaveable {
+        mutableStateOf(userData?.phonenumber ?: "")
+    }
+    if (vm.inProgress.value) {
+        ProgressionBar()
+    } else {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(color = Color(0xFF092635))
+                .verticalScroll(rememberScrollState())
+                .safeDrawingPadding()
+        ) {
+            TopSectionOfProfile(navHostController = navHostController, status = status, vm = vm, name = name, number = number)
+            Spacer(modifier = Modifier.height(60.dp))
+            ProfileImage(imageUrl = imageurl, vm = vm)
+            Spacer(modifier = Modifier.height(60.dp))
+            UserName(name = name)
+            Spacer(modifier = Modifier.height(30.dp))
+            UserContact(phonenumber = number)
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(color = Color(0xFF092635))
-            .verticalScroll(rememberScrollState())
-    ) {
-        TopSectionOfProfile(status)
-        Spacer(modifier = Modifier.height(60.dp))
-        ProfileImage()
-        Spacer(modifier = Modifier.height(60.dp))
-        UserName()
-        Spacer(modifier = Modifier.height(30.dp))
-        UserContact()
-
+        }
     }
 
 }
 
 @Composable
-fun UserContact() {
-    var phone by rememberSaveable {
-        mutableStateOf("")
-    }
+fun UserContact(phonenumber: MutableState<String>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.padding(15.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(15.dp)
+            .fillMaxWidth()
     ) {
         Text(
             text = "Phone",
@@ -100,15 +110,13 @@ fun UserContact() {
         )
         Spacer(modifier = Modifier.width(10.dp))
         Card(
-            elevation = CardDefaults.cardElevation(10.dp),
-            colors = CardDefaults.cardColors(
-                contentColor = Color.Black,
-                containerColor = Color.White
+            elevation = CardDefaults.cardElevation(10.dp), colors = CardDefaults.cardColors(
+                contentColor = Color.Black, containerColor = Color.White
             )
         ) {
             TextField(
-                value = phone,
-                onValueChange = { phone = it },
+                value = phonenumber.value,
+                onValueChange = { phonenumber.value = it },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
@@ -119,14 +127,13 @@ fun UserContact() {
 }
 
 @Composable
-fun UserName() {
-    var name by rememberSaveable {
-        mutableStateOf("")
-    }
+fun UserName(name: MutableState<String>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-        modifier = Modifier.padding(15.dp).fillMaxWidth()
+        modifier = Modifier
+            .padding(15.dp)
+            .fillMaxWidth()
     ) {
         Text(
             text = "Name",
@@ -137,15 +144,13 @@ fun UserName() {
         )
         Spacer(modifier = Modifier.width(10.dp))
         Card(
-            elevation = CardDefaults.cardElevation(10.dp),
-            colors = CardDefaults.cardColors(
-                contentColor = Color.Black,
-                containerColor = Color.White
+            elevation = CardDefaults.cardElevation(10.dp), colors = CardDefaults.cardColors(
+                contentColor = Color.Black, containerColor = Color.White
             )
         ) {
             TextField(
-                value = name,
-                onValueChange = { name = it },
+                value = name.value,
+                onValueChange = { name.value = it },
                 colors = TextFieldDefaults.colors(
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
@@ -156,9 +161,14 @@ fun UserName() {
 }
 
 @Composable
-fun ProfileImage() {
-    val imageUri = rememberSaveable { mutableStateOf("") }
-    val painter = painterResource(id = R.drawable.ic_user)
+fun ProfileImage(imageUrl: String?, vm: viewModel) {
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.GetContent()
+    ) { uri ->
+        uri?.let {
+            vm.uploadProfileImage(uri)
+        }
+    }
     Column(
         modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -171,19 +181,20 @@ fun ProfileImage() {
                 contentColor = Color.White, containerColor = Color.White
             )
         ) {
-            Image(painter = painter,
+            Image(painter = rememberAsyncImagePainter(model = imageUrl),
                 contentDescription = "",
                 modifier = Modifier
                     .wrapContentSize()
-                    .clickable { }
+                    .clickable {}
                     .size(150.dp)
                     .padding(bottom = 4.dp),
-                contentScale = ContentScale.FillBounds)
+                contentScale = ContentScale.Crop
+            )
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Row(
-            modifier = Modifier.clickable { /* new profile to be changed */ }
-        ) {
+        Row(modifier = Modifier.clickable {
+            launcher.launch("image/*")
+        }) {
             Text(
                 text = "Change",
                 fontSize = 20.sp,
@@ -203,12 +214,15 @@ fun ProfileImage() {
 }
 
 @Composable
-private fun TopSectionOfProfile(status: MutableState<String>) {
+private fun TopSectionOfProfile(name: MutableState<String>, number: MutableState<String>, vm: viewModel, navHostController: NavHostController, status: MutableState<String>) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
     ) {
         Button(
-            onClick = { status.value = "Cancelled" },
+            onClick = {
+                status.value = "Cancelled"
+                navHostController.popBackStack()
+                      },
             elevation = ButtonDefaults.buttonElevation(0.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.Transparent, contentColor = Color.White
@@ -219,8 +233,13 @@ private fun TopSectionOfProfile(status: MutableState<String>) {
             )
         }
         Button(
-            onClick = { status.value = "Saved" }, colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent, contentColor = Color.White
+            onClick = {
+                status.value = "Saved"
+                vm.createOrUpdateProfile(name = name.value, phonenumber = number.value)
+                      },
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.Transparent,
+                contentColor = Color.White
             )
         ) {
             Text(

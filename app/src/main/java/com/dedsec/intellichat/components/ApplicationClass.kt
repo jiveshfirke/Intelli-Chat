@@ -1,4 +1,4 @@
-package com.dedsec.chatuiapp.components
+package com.dedsec.intellichat.components
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp

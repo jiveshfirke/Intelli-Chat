@@ -1,4 +1,4 @@
-package com.dedsec.chatuiapp.ui.theme
+package com.dedsec.intellichat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

@@ -1,16 +1,17 @@
-package com.dedsec.chatuiapp.navigation
+package com.dedsec.intellichat.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.dedsec.chatuiapp.components.viewModel
-import com.dedsec.chatuiapp.screens.ChatScreen
-import com.dedsec.chatuiapp.screens.HomeScreen
-import com.dedsec.chatuiapp.screens.LoginScreen
-import com.dedsec.chatuiapp.screens.SignUpScreen
-import com.dedsec.chatuiapp.screens.StartScreen
+import com.dedsec.intellichat.screens.ProfileScreen
+import com.dedsec.intellichat.components.viewModel
+import com.dedsec.intellichat.screens.ChatScreen
+import com.dedsec.intellichat.screens.HomeScreen
+import com.dedsec.intellichat.screens.LoginScreen
+import com.dedsec.intellichat.screens.SignUpScreen
+import com.dedsec.intellichat.screens.StartScreen
 
 @Composable
 fun MainNavigation() {
@@ -47,6 +48,12 @@ fun MainNavigation() {
                 vm
             )
         }
+        composable(Profile){
+            ProfileScreen(
+                navHostController,
+                vm
+            )
+        }
     }
 }
 
@@ -55,3 +62,4 @@ const val Home = "home_screen"
 const val Chat = "chat_screen"
 const val Login = "login_screen"
 const val SignUp = "signup_screen"
+const val Profile = "profile_screen"

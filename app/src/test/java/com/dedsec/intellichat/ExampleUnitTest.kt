@@ -1,4 +1,4 @@
-package com.dedsec.chatuiapp
+package com.dedsec.intellichat
 
 import org.junit.Test
 

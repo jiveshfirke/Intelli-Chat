@@ -19,5 +19,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Chat UI App"
+rootProject.name = "Intelli Chat"
 include(":app")

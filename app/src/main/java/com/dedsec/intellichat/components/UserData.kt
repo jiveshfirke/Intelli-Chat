@@ -1,4 +1,4 @@
-package com.dedsec.chatuiapp.components
+package com.dedsec.intellichat.components
 
 data class UserData(
     val userId: String? = null,
