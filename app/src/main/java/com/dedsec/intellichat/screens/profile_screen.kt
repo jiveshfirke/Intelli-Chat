@@ -169,6 +169,9 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
             vm.uploadProfileImage(uri)
         }
     }
+
+    val painter = painterResource(id = R.drawable.ic_user)
+
     Column(
         modifier = Modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -181,15 +184,27 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
                 contentColor = Color.White, containerColor = Color.White
             )
         ) {
-            Image(painter = rememberAsyncImagePainter(model = imageUrl),
-                contentDescription = "",
-                modifier = Modifier
-                    .wrapContentSize()
-                    .clickable {}
-                    .size(150.dp)
-                    .padding(bottom = 4.dp),
-                contentScale = ContentScale.Crop
-            )
+            if (imageUrl.isNullOrEmpty()){
+                Image(painter = painter,
+                    contentDescription = null,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .clickable {}
+                        .size(150.dp)
+                        .padding(bottom = 4.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }else {
+                Image(painter = rememberAsyncImagePainter(model = imageUrl),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .wrapContentSize()
+                        .clickable {}
+                        .size(150.dp)
+                        .padding(bottom = 4.dp),
+                    contentScale = ContentScale.Crop
+                )
+            }
         }
         Spacer(modifier = Modifier.height(6.dp))
         Row(modifier = Modifier.clickable {

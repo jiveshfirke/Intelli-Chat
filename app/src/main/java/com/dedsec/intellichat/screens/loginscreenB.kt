@@ -51,12 +51,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import com.dedsec.chatuiapp.R
-import com.dedsec.chatuiapp.components.viewModel
-import com.dedsec.chatuiapp.navigation.Login
-import com.dedsec.chatuiapp.navigation.SignUp
-import com.dedsec.chatuiapp.ui.theme.appNameFont
-import com.dedsec.chatuiapp.ui.theme.welcomeFont
+import com.dedsec.intellichat.R
+import com.dedsec.intellichat.ui.theme.appNameFont
+import com.dedsec.intellichat.ui.theme.welcomeFont
 
 val welcomeText = buildAnnotatedString {
     withStyle(

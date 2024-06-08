@@ -18,37 +18,41 @@ fun MainNavigation() {
     val vm = hiltViewModel<viewModel>()
     val navHostController = rememberNavController()
     NavHost(navController = navHostController, startDestination = Start) {
-        composable(Start){
+        composable(Start) {
             StartScreen(
                 navHostController,
                 vm
             )
         }
-        composable(Home){
+        composable(Home) {
             HomeScreen(
                 navHostController,
                 vm
             )
         }
-        composable(Chat){
-            ChatScreen(
-                navHostController,
-                vm
-            )
+        composable("$Chat/{chatId}") {
+            val chatId = it.arguments?.getString("chatId")
+            chatId.let {
+                ChatScreen(
+                    navHostController,
+                    vm,
+                    chatId
+                )
+            }
         }
-        composable(Login){
+        composable(Login) {
             LoginScreen(
                 navHostController,
                 vm
             )
         }
-        composable(SignUp){
+        composable(SignUp) {
             SignUpScreen(
                 navHostController,
                 vm
             )
         }
-        composable(Profile){
+        composable(Profile) {
             ProfileScreen(
                 navHostController,
                 vm

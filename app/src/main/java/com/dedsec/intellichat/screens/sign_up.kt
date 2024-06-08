@@ -20,6 +20,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -37,6 +38,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.Observer
 import androidx.navigation.NavHostController
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.ProgressionBar
@@ -78,10 +80,7 @@ fun SignUpScreen(
             Toast.makeText(context, "Please fill complete information", Toast.LENGTH_LONG).show()
             return
         }else{
-            vm.signUp(name = name, phonenumber = phonenumber, email = email, password = password)
-            navHostController.navigate(Home){
-                popUpTo(0)
-            }
+            vm.signUp(name = name, phonenumber = phonenumber, email = email, password = password, navHostController = navHostController)
         }
     }
 
@@ -195,7 +194,7 @@ fun SignUpScreen(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            val SignUpText = buildAnnotatedString {
+            val LoginInText = buildAnnotatedString {
                 withStyle(
                     style = SpanStyle(
                         color = Color.Black,
@@ -215,10 +214,10 @@ fun SignUpScreen(
             }
 
             Text(
-                SignUpText,
+                LoginInText,
                 modifier = Modifier
                     .clickable {
-                        navHostController.navigate(SignUp){
+                        navHostController.navigate(Login){
                             popUpTo(Login){
                                 inclusive = true
                             }
