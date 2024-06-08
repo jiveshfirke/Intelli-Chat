@@ -36,6 +36,8 @@ class viewModel @Inject constructor(
     val inProgressChatMessages = mutableStateOf(false)
     val chatMessages = mutableStateOf<List<MessageData>>(listOf())
     var currentChatMessageListener: ListenerRegistration? = null
+    val statusList = mutableStateOf<List<StatusData>>(listOf())
+    val inProgrressstatus = mutableStateOf(false)
 
     init {
         val currentUser = auth.currentUser
@@ -131,6 +133,7 @@ class viewModel @Inject constructor(
         signIn.value = false
         auth.signOut()
         userData.value = null
+        depopulateMessages()
         Log.i("viewModel", "Successfully signed out")
     }
 

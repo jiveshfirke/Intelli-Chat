@@ -79,6 +79,7 @@ fun HomeScreen(
             .fillMaxSize()
             .background(Color.Black)
             .safeDrawingPadding()
+            .padding(top = 15.dp)
     ){
         Column (
             modifier = Modifier
@@ -145,7 +146,7 @@ fun HomeScreen(
                                     }
                                     UserRow(chatuser = chatuser) {
                                         chat.chatId?.let {
-                                            navHostController.navigate("$Chat/{$it}")
+                                            navHostController.navigate("$Chat/$it")
                                         }
                                     }
                                 }
@@ -314,56 +315,39 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
     ){
         Row(
             Modifier
+                .height(80.dp)
                 .padding(horizontal = 20.dp, vertical = 10.dp)
                 .fillMaxWidth(),
-            horizontalArrangement = Arrangement.Start
+            horizontalArrangement = Arrangement.Start,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             if (chatuser.imageUrl.isNullOrEmpty()) {
                 Image(
                     painter = painterResource(id = R.drawable.ic_user),
                     contentDescription = "Person Profile",
                     modifier = Modifier
-                        .size(65.dp)
+                        .size(50.dp)
                 )
             }else{
                 Image(
                     painter = rememberAsyncImagePainter(model = chatuser.imageUrl),
                     contentDescription = "Person Profile",
                     modifier = Modifier
-                        .size(65.dp)
+                        .size(50.dp)
                 )
             }
             Spacer(
                 modifier = Modifier
                     .width(10.dp)
             )
-            Row (
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ){
-                Column {
-                    Text(
-                        chatuser.name?: "",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            color = Color.Black,
-                            fontWeight = FontWeight.Bold
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-
-                    Text(
-                        "Okay",
-                        style = TextStyle(
-                            fontSize = 16.sp,
-                            color = Color.Black,
-                        )
-                    )
-
-                }
-                Text(text = "12.23pm")
-
-            }
+            Text(
+                chatuser.name?: "",
+                style = TextStyle(
+                    fontSize = 18.sp,
+                    color = Color.Black,
+                    fontWeight = FontWeight.Bold
+                )
+            )
         }
         Spacer(modifier = Modifier.height(5.dp))
         HorizontalDivider(thickness = 1.dp, color = Color.LightGray, modifier = Modifier.fillMaxWidth(0.9f))
