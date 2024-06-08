@@ -36,7 +36,7 @@ fun MainNavigation() {
                 ChatScreen(
                     navHostController,
                     vm,
-                    chatId
+                    chatId?: ""
                 )
             }
         }
