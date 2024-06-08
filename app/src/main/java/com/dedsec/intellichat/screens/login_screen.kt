@@ -58,12 +58,12 @@ fun LoginScreen(
 
     fun checkForInformation(email: String, password: String) {
         if (email.isEmpty() || password.isEmpty()){
-            Log.i("Sign up function", "Incomplete information")
+            Log.i("Login in function", "Incomplete information")
             Toast.makeText(context, "Please fill complete information", Toast.LENGTH_LONG).show()
             return
         }
         else{
-            vm.loginIn(email = email, password = password)
+            vm.loginIn(email = email, password = password, navHostController = navHostController)
             navHostController.navigate(Home){
                 popUpTo(0)
             }

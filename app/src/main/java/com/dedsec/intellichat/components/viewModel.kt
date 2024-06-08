@@ -11,10 +11,12 @@ import com.dedsec.intellichat.navigation.Home
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.toObject
 import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
 
@@ -31,6 +33,9 @@ class viewModel @Inject constructor(
     var signIn = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
     val chats = mutableStateOf<List<ChatData>>(listOf())
+    val inProgressChatMessages = mutableStateOf(false)
+    val chatMessages = mutableStateOf<List<MessageData>>(listOf())
+    var currentChatMessageListener: ListenerRegistration? = null
 
     init {
         val currentUser = auth.currentUser
@@ -41,7 +46,28 @@ class viewModel @Inject constructor(
         }
     }
 
-    fun loginIn(email: String, password: String) {
+    fun populateMessages(chatId: String) {
+        inProgressChatMessages.value = true
+        currentChatMessageListener = db.collection("Chats").document(chatId).collection("messages")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.i("viewModel", "Failed to get messages $e")
+                }
+                if (snapshot != null) {
+                    chatMessages.value = snapshot.documents.mapNotNull {
+                        it.toObject(MessageData::class.java)
+                    }.sortedBy { it.timestamp }
+                    inProgressChatMessages.value = false
+                }
+            }
+    }
+
+    fun depopulateMessages() {
+        chatMessages.value = listOf()
+        currentChatMessageListener = null
+    }
+
+    fun loginIn(email: String, password: String, navHostController: NavHostController) {
         inProgress.value = true
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { result ->
@@ -52,13 +78,25 @@ class viewModel @Inject constructor(
                     auth.currentUser?.uid?.let {
                         getUserData(it)
                     }
+                    navHostController.navigate(Home){
+                        popUpTo(0)
+                    }
                 } else {
                     Log.i("viewModel", "Login Failed")
                 }
             }
+            .addOnFailureListener {
+                Log.i("viewModel", "Login Failed $it")
+            }
     }
 
-    fun signUp(name: String, phonenumber: String, email: String, password: String, navHostController: NavHostController) {
+    fun signUp(
+        name: String,
+        phonenumber: String,
+        email: String,
+        password: String,
+        navHostController: NavHostController
+    ) {
         inProgress.value = true
 
         db.collection("User").whereEqualTo("phonenumber", phonenumber).get()
@@ -69,7 +107,7 @@ class viewModel @Inject constructor(
                             if (task.isSuccessful) {
                                 createOrUpdateProfile(name, phonenumber)
                                 signIn.value = true
-                                navHostController.navigate(Home){
+                                navHostController.navigate(Home) {
                                     popUpTo(0)
                                 }
                                 Log.i("viewModel", "Successfully created user")
@@ -215,7 +253,10 @@ class viewModel @Inject constructor(
                             }
                         }
                         .addOnFailureListener {
-                            Log.i("viewModel", "Failed to get user with this number:$addChatNumber $it")
+                            Log.i(
+                                "viewModel",
+                                "Failed to get user with this number:$addChatNumber $it"
+                            )
                         }
                 } else {
                     Log.i("viewModel", "Chat already exists")
@@ -233,7 +274,7 @@ class viewModel @Inject constructor(
                 Filter.equalTo("user1.number", userData.value?.phonenumber),
                 Filter.equalTo("user2.number", userData.value?.phonenumber)
             )
-        ).addSnapshotListener{snapshot, e ->
+        ).addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.i("viewModel", "Failed to get chats $e")
             }
@@ -244,5 +285,16 @@ class viewModel @Inject constructor(
                 inProgressChat.value = false
             }
         }
+    }
+
+    fun sendMessage(chatId: String, message: String) {
+        val time = Calendar.getInstance().time.toString()
+        val messageData = MessageData(
+            senderId = userData.value?.userId,
+            message = message,
+            timestamp = time
+        )
+        db.collection("Chats").document(chatId).collection("messages").add(messageData)
+
     }
 }
