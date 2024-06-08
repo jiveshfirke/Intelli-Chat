@@ -20,3 +20,9 @@ data class ChatUser(
     val imageUrl: String? = ""
 
 )
+
+data class MessageData(
+    val senderId: String? = "",
+    val message: String? = "",
+    val timestamp: String? = ""
+)
