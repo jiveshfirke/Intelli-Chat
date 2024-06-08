@@ -11,11 +11,12 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -31,7 +32,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -41,127 +47,179 @@ import com.dedsec.intellichat.components.viewModel
 import com.dedsec.intellichat.navigation.Home
 import com.dedsec.intellichat.navigation.Login
 import com.dedsec.intellichat.navigation.SignUp
+import com.dedsec.intellichat.ui.theme.loginFont
+import com.dedsec.intellichat.ui.theme.singUpTextFont
 
 @Composable
 fun LoginScreen(
     navHostController: NavHostController,
     vm: viewModel
-){
-    val context = LocalContext.current
-
+) {
     var email by remember {
         mutableStateOf("")
     }
-
     var password by remember {
         mutableStateOf("")
     }
+    val context = LocalContext.current
+
 
     fun checkForInformation(email: String, password: String) {
-        if (email.isEmpty() || password.isEmpty()){
+        if (email.isEmpty() || password.isEmpty()) {
             Log.i("Login in function", "Incomplete information")
             Toast.makeText(context, "Please fill complete information", Toast.LENGTH_LONG).show()
             return
-        }
-        else{
+        } else {
             vm.loginIn(email = email, password = password, navHostController = navHostController)
-            navHostController.navigate(Home){
+            navHostController.navigate(Home) {
                 popUpTo(0)
             }
         }
     }
 
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ){
-        Image(
-            painter = painterResource(id = R.drawable.login_screen_background),
-            contentDescription = "",
-            contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxSize()
-            )
+    Box {
+        BackgroundImageLogin()
+        LoginText()
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
-            modifier = Modifier.fillMaxSize()
-        ){
-            Image(
-                painter = painterResource(id = R.drawable.iconimg),
-                contentDescription = "Icon",
-                modifier = Modifier
-                    .size(42.dp)
-            )
-            
-            Spacer(modifier = Modifier.height(20.dp))
-            
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(43.dp)
+        ) {
+
+            Spacer(Modifier.height(20.dp))
+
             TextField(
-                value =email,
-                onValueChange = { email = it},
+                value = email,
+                onValueChange = { email = it },
                 shape = RoundedCornerShape(100),
                 colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color.Transparent,
-                    focusedContainerColor = Color.LightGray,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 placeholder = {
-                    Text(text = "Enter your Email")
+                    Text(
+                        text = "Enter your Email",
+                        color = Color(0xFFB4B4B3),
+                        fontWeight = FontWeight.Normal,
+//                        letterSpacing = 1.sp,
+                        fontSize = 20.sp
+                    )
                 },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_email_foreground),
+                        contentDescription = "",
+                        modifier = Modifier.size(40.dp)
+                    )
+                },
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 21.sp,
+                    fontWeight = FontWeight.W400,
+                    letterSpacing = 1.sp
+                ),
+                modifier = Modifier.fillMaxWidth()
             )
 
-            Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(30.dp))
 
             TextField(
                 value = password,
-                onValueChange = { password = it},
+                onValueChange = { password = it },
                 shape = RoundedCornerShape(100),
                 colors = TextFieldDefaults.colors(
+                    focusedContainerColor = Color.White,
+                    unfocusedContainerColor = Color.White,
                     focusedIndicatorColor = Color.Transparent,
-                    focusedContainerColor = Color.LightGray,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 placeholder = {
-                    Text(text = "Enter your password")
+                    Text(
+                        text = "Enter your Password",
+                        color = Color(0xFFB4B4B3),
+                        fontWeight = FontWeight.Normal,
+//                        letterSpacing = 1.sp,
+                        fontSize = 20.sp
+                    )
                 },
+                leadingIcon = {
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_lock_password_foreground),
+                        contentDescription = "",
+                        modifier = Modifier.size(40.dp)
+                    )
+                },
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 21.sp,
+                    fontWeight = FontWeight.W400,
+                    letterSpacing = 1.sp
+                ),
+                modifier = Modifier.fillMaxWidth(),
+                visualTransformation = PasswordVisualTransformation(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password)
             )
+        }
 
-            Spacer(modifier = Modifier.height(20.dp))
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(bottom = 70.dp, start = 40.dp, end = 40.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Bottom
+        ) {
 
-            Button(
+            ElevatedButton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 80.dp, end = 80.dp, bottom = 30.dp),
                 onClick = {
                     checkForInformation(email, password)
                 }
             ) {
-                Text(text = "Login")
+
+                Text(
+                    text = "SIGN IN",
+                    fontSize = 30.sp,
+                    color = Color.Black,
+                    fontFamily = loginFont
+                )
             }
 
-            Spacer(modifier = Modifier.height(10.dp))
-
-            val SignUpText = buildAnnotatedString {
+            val signUpText = buildAnnotatedString {
                 withStyle(
                     style = SpanStyle(
-                        color = Color.Black,
-                        fontSize = 12.sp
+                        color = Color.White,
+                        fontSize = 20.sp,
+                        fontFamily = singUpTextFont,
+                        letterSpacing = 0.8.sp
                     )
-                ){
+                ) {
                     append("New User? ")
                 }
                 withStyle(
                     style = SpanStyle(
-                        color = Color.Blue,
-                        fontSize = 12.sp
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontFamily = singUpTextFont,
+                        textDecoration = TextDecoration.Underline,
+                        letterSpacing = 0.8.sp
                     )
-                ){
+                ) {
                     append("Sign Up")
                 }
             }
 
             Text(
-                SignUpText,
+                signUpText,
                 modifier = Modifier
                     .clickable {
-                        navHostController.navigate(SignUp){
-                            popUpTo(Login){
+                        navHostController.navigate(SignUp) {
+                            popUpTo(Login) {
                                 inclusive = true
                             }
                         }
@@ -170,4 +228,47 @@ fun LoginScreen(
         }
     }
 
+}
+
+@Composable
+private fun LoginText() {
+    Column {
+        Text(
+            text = "Welcome",
+            fontSize = 55.sp,
+            color = Color(0xFF171624),
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            modifier = Modifier
+                .padding(top = 100.dp, start = 15.dp)
+        )
+        Text(
+            text = "Back",
+            fontSize = 50.sp,
+            color = Color(0xFF171624),
+            fontWeight = FontWeight.Bold,
+            letterSpacing = 1.sp,
+            modifier = Modifier
+                .padding(top = 0.dp, start = 15.dp)
+        )
+        Text(
+            text = "Hey! Good to see you again",
+            fontSize = 20.sp,
+            color = Color(0xFF171624),
+            fontWeight = FontWeight.Normal,
+            fontFamily = loginFont,
+            modifier = Modifier
+                .padding(top = 0.dp, start = 15.dp)
+        )
+    }
+}
+
+@Composable
+fun BackgroundImageLogin() {
+    Image(
+        painter = painterResource(id = R.drawable.login_screen_background),
+        contentDescription = "",
+        contentScale = ContentScale.Crop,
+        modifier = Modifier.fillMaxSize()
+    )
 }

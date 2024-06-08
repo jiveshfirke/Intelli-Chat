@@ -56,6 +56,7 @@ fun ChatScreen(
     navHostController: NavHostController,
     vm: viewModel,
     chatId: String
+
 ) {
     val message = remember { mutableStateOf("") }
     val context = LocalContext.current

@@ -44,3 +44,11 @@ val welcomeFont = FontFamily(
 val appNameFont = FontFamily(
     Font(resId = R.font.acme_regular)
 )
+
+val loginFont = FontFamily(
+    Font(resId = R.font.montserrat_regular)
+)
+
+val singUpTextFont = FontFamily(
+    Font(resId = R.font.nunito_regular)
+)
