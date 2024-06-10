@@ -2,9 +2,7 @@ package com.dedsec.intellichat.components
 
 import android.net.Uri
 import android.util.Log
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.dedsec.intellichat.navigation.Home
@@ -12,8 +10,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.toObject
-import com.google.firebase.firestore.toObjects
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Calendar
@@ -37,7 +33,7 @@ class viewModel @Inject constructor(
     val chatMessages = mutableStateOf<List<MessageData>>(listOf())
     var currentChatMessageListener: ListenerRegistration? = null
     val statusList = mutableStateOf<List<StatusData>>(listOf())
-    val inProgrressstatus = mutableStateOf(false)
+    val inProgressStatus = mutableStateOf(false)
 
     init {
         val currentUser = auth.currentUser
@@ -80,7 +76,7 @@ class viewModel @Inject constructor(
                     auth.currentUser?.uid?.let {
                         getUserData(it)
                     }
-                    navHostController.navigate(Home){
+                    navHostController.navigate(Home) {
                         popUpTo(0)
                     }
                 } else {
@@ -183,6 +179,7 @@ class viewModel @Inject constructor(
                 userData.value = user
                 inProgress.value = false
                 populateChats()
+                populateStatus()
                 Log.i("viewModel", "Successfully retrieved user data")
             }
         }
@@ -279,7 +276,8 @@ class viewModel @Inject constructor(
             )
         ).addSnapshotListener { snapshot, e ->
             if (e != null) {
-                Log.i("viewModel", "Failed to get chats $e")
+                Log.i("viewModel", "Failed to get chats ${e.message}")
+                inProgressChat.value = false
             }
             if (snapshot != null) {
                 chats.value = snapshot.documents.mapNotNull {
@@ -299,5 +297,65 @@ class viewModel @Inject constructor(
         )
         db.collection("Chats").document(chatId).collection("messages").add(messageData)
 
+    }
+
+    fun uploadStatus(it: Uri) {
+        uploadImage(it) {
+            createStatus(it.toString())
+        }
+    }
+
+    fun createStatus(imageUrl: String) {
+        val newStatus = StatusData(
+            user = ChatUser(
+                userId = userData.value?.userId,
+                name = userData.value?.name,
+                imageUrl = userData.value?.imageUrl,
+                number = userData.value?.phonenumber
+            ),
+            imageUrl = imageUrl,
+            timestamp = System.currentTimeMillis()
+        )
+
+        db.collection("Status").document().set(newStatus)
+    }
+
+    fun populateStatus() {
+        val timeDelta = 24L * 60 * 60 * 1000
+        val cutOff = System.currentTimeMillis() - timeDelta
+        inProgressStatus.value = true
+        db.collection("Chats").where(
+            Filter.or(
+                Filter.equalTo("user1.userId", userData.value?.userId),
+                Filter.equalTo("user2.userId", userData.value?.userId)
+            )
+        ).addSnapshotListener { snapshot, e ->
+            if (e != null) {
+                Log.i("viewModel", "Failed to get chats $e")
+            }
+            if (snapshot != null) {
+                val currentConnections = arrayListOf(userData.value?.userId)
+                val chats = snapshot.toObjects(ChatData::class.java)
+                chats.forEach { chat ->
+                    if (chat.user1.userId == userData.value?.userId) {
+                        currentConnections.add(chat.user2.userId)
+                    } else {
+                        currentConnections.add(chat.user1.userId)
+                    }
+                }
+
+                db.collection("Status").whereGreaterThan("timestamp", cutOff).whereIn("user.userId", currentConnections)
+                    .addSnapshotListener { snapshotstatus, error ->
+                        if (error != null) {
+                            Log.i("viewModel", "Failed to get chats $error")
+                        }
+                        if (snapshotstatus != null) {
+                            statusList.value = snapshotstatus.toObjects(StatusData::class.java)
+                            statusList.value = statusList.value.filter { it.timestamp!! >= cutOff }
+                            inProgressStatus.value = false
+                        }
+                    }
+            }
+        }
     }
 }

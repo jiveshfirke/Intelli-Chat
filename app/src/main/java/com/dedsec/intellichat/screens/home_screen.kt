@@ -1,6 +1,8 @@
 package com.dedsec.intellichat.screens
 
 import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -52,17 +54,15 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.text.isDigitsOnly
 import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.ChatUser
 import com.dedsec.intellichat.components.ProgressionBar
 import com.dedsec.intellichat.components.viewModel
-import com.dedsec.intellichat.data.Person
-import com.dedsec.intellichat.data.personList
 import com.dedsec.intellichat.navigation.Chat
 import com.dedsec.intellichat.navigation.Profile
+import com.dedsec.intellichat.navigation.Single_Status
 import com.dedsec.intellichat.navigation.Start
 
 @Composable
@@ -80,20 +80,56 @@ fun HomeScreen(
             .background(Color.Black)
             .safeDrawingPadding()
             .padding(top = 15.dp)
-    ){
-        Column (
+    ) {
+        Column(
             modifier = Modifier
                 .fillMaxSize()
-        ){
-            Header()
+        ) {
+            Header(vm.userData.value?.name)
 
             LazyRow {
                 item {
-                    AddStoryLayout()
+                    val launcher = rememberLauncherForActivityResult(
+                        contract = ActivityResultContracts.GetContent()
+                    ) { uri ->
+                        uri?.let {
+                            vm.uploadStatus(it)
+                        }
+                    }
+                    AddStoryLayout(onClick = { launcher.launch("image/*") })
                     Spacer(modifier = Modifier.width(10.dp))
                 }
-                items(personList, key = {it.id}){
-                    UserStoryLayout(person = it)
+                val statusList = vm.statusList.value
+                val userData = vm.userData.value
+                val myStatus = statusList.filter {
+                    it.user.userId == userData?.userId
+                }
+
+                val otherStatus = statusList.filter {
+                    it.user.userId != userData?.userId
+                }
+                if (vm.inProgressStatus.value) {
+                    item {
+                        ProgressionBar()
+                    }
+                } else {
+                    if (myStatus.isNotEmpty()) {
+                        item {
+                            UserStoryLayout(
+                                name = myStatus[0].user.name,
+                                imageUrl = myStatus[0].user.imageUrl,
+                                onClick = { navHostController.navigate("$Single_Status/${userData?.userId}") }
+                            )
+                        }
+                    }
+                    val uniqueUsers = otherStatus.map { it.user }.toSet().toList()
+                    items(uniqueUsers) { user ->
+                        UserStoryLayout(
+                            name = user.name,
+                            imageUrl = user.imageUrl,
+                            onClick = { navHostController.navigate("$Single_Status/${user.userId}") }
+                        )
+                    }
                 }
             }
 
@@ -109,9 +145,11 @@ fun HomeScreen(
                     )
                     .background(Color.White),
                 contentAlignment = Alignment.TopCenter
-            ){
+            ) {
                 Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier
+                        .fillMaxSize()
                 ) {
                     BottomSheet()
                     val showDialog = remember {
@@ -123,27 +161,28 @@ fun HomeScreen(
                         vm = vm
                     )
 
-                    if (vm.inProgressChat.value){
+                    if (vm.inProgressChat.value) {
                         ProgressionBar()
-                    }else {
+                    } else {
                         val chats = vm.chats.value
 
-                        if (chats.isEmpty()){
+                        if (chats.isEmpty()) {
                             Box(
                                 modifier = Modifier
                                     .fillMaxSize(),
                                 contentAlignment = Alignment.Center
-                            ){
+                            ) {
                                 Text(text = "No chats available")
                             }
-                        }else{
+                        } else {
                             LazyColumn {
-                                items(chats){chat->
-                                    val chatuser = if (chat.user1.userId == vm.userData.value?.userId){
-                                        chat.user2
-                                    }else{
-                                        chat.user1
-                                    }
+                                items(chats) { chat ->
+                                    val chatuser =
+                                        if (chat.user1.userId == vm.userData.value?.userId) {
+                                            chat.user2
+                                        } else {
+                                            chat.user1
+                                        }
                                     UserRow(chatuser = chatuser) {
                                         chat.chatId?.let {
                                             navHostController.navigate("$Chat/$it")
@@ -180,21 +219,21 @@ fun HomeScreen(
             )
             DropdownMenu(
                 expanded = isVisible.value,
-                onDismissRequest = { isVisible.value = !isVisible.value},
+                onDismissRequest = { isVisible.value = !isVisible.value },
                 modifier = Modifier,
 
-            ){
+                ) {
                 DropdownMenuItem(
-                    text = { Text(text = "Profile")},
+                    text = { Text(text = "Profile") },
                     onClick = {
                         navHostController.navigate(Profile)
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(text = "Logout")},
+                    text = { Text(text = "Logout") },
                     onClick = {
                         vm.signOut()
-                        navHostController.navigate(Start){
+                        navHostController.navigate(Start) {
                             popUpTo(0)
                         }
                     }
@@ -207,9 +246,9 @@ fun HomeScreen(
 @Composable
 fun addChatFunction(
     showDialog: Boolean,
-    addChat: (String)-> Unit,
-    onDismiss: ()-> Unit,
-){
+    addChat: (String) -> Unit,
+    onDismiss: () -> Unit,
+) {
     val addChatNumber = remember {
         mutableStateOf("")
     }
@@ -236,7 +275,7 @@ fun addChatFunction(
             text = {
                 TextField(
                     value = addChatNumber.value,
-                    onValueChange = {addChatNumber.value = it},
+                    onValueChange = { addChatNumber.value = it },
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
                 )
             }
@@ -250,13 +289,13 @@ fun AddChatRow(
     vm: viewModel
 ) {
     val context = LocalContext.current
-    Column (
+    Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable {
                 showDialog.value = true
             }
-    ){
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
@@ -286,15 +325,19 @@ fun AddChatRow(
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
-        HorizontalDivider(thickness = 1.dp, color = Color.LightGray, modifier = Modifier.fillMaxWidth(0.9f))
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = Color.LightGray,
+            modifier = Modifier.fillMaxWidth(0.9f)
+        )
     }
-    if (showDialog.value){
+    if (showDialog.value) {
         addChatFunction(
             showDialog = showDialog.value,
             addChat = {
-                if (it.length < 10){
+                if (it.length < 10) {
                     Toast.makeText(context, "Please add a valid number", Toast.LENGTH_SHORT).show()
-                }else {
+                } else {
                     vm.addChat(addChatNumber = it)
                     showDialog.value = false
                 }
@@ -312,7 +355,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .clickable { onClick() }
-    ){
+    ) {
         Row(
             Modifier
                 .height(80.dp)
@@ -328,7 +371,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     modifier = Modifier
                         .size(50.dp)
                 )
-            }else{
+            } else {
                 Image(
                     painter = rememberAsyncImagePainter(model = chatuser.imageUrl),
                     contentDescription = "Person Profile",
@@ -341,7 +384,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     .width(10.dp)
             )
             Text(
-                chatuser.name?: "",
+                chatuser.name ?: "",
                 style = TextStyle(
                     fontSize = 18.sp,
                     color = Color.Black,
@@ -350,12 +393,16 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
             )
         }
         Spacer(modifier = Modifier.height(5.dp))
-        HorizontalDivider(thickness = 1.dp, color = Color.LightGray, modifier = Modifier.fillMaxWidth(0.9f))
+        HorizontalDivider(
+            thickness = 1.dp,
+            color = Color.LightGray,
+            modifier = Modifier.fillMaxWidth(0.9f)
+        )
     }
 }
 
 @Composable
-fun BottomSheet(){
+fun BottomSheet() {
     Box(
         modifier = Modifier
             .padding(top = 15.dp)
@@ -367,15 +414,15 @@ fun BottomSheet(){
 }
 
 @Composable
-fun Header(){
+fun Header(name: String?) {
     val text = buildAnnotatedString {
         withStyle(
-            style =  SpanStyle(
+            style = SpanStyle(
                 color = Color.White,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.W300
             )
-        ){
+        ) {
             append("Welcome back, ")
         }
         withStyle(
@@ -384,8 +431,8 @@ fun Header(){
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
-        ){
-            append("Jivesh")
+        ) {
+            append(name?: "")
         }
     }
     Text(
@@ -396,16 +443,19 @@ fun Header(){
 }
 
 @Composable
-fun AddStoryLayout(){
-    Column (
+fun AddStoryLayout(onClick: () -> Unit) {
+    Column(
         modifier = Modifier
             .padding(start = 20.dp)
-    ){
+    ) {
         Box(
             modifier = Modifier
                 .border(2.dp, Color.Yellow, CircleShape)
                 .background(Color.Yellow, CircleShape)
-                .size(70.dp),
+                .size(70.dp)
+                .clickable {
+                    onClick()
+                },
             contentAlignment = Alignment.Center
         ) {
             Box(
@@ -437,28 +487,40 @@ fun AddStoryLayout(){
 }
 
 @Composable
-fun UserStoryLayout(person: Person){
-    Column (
+fun UserStoryLayout(name: String?, imageUrl: String?, onClick: () -> Unit) {
+    Column(
         modifier = Modifier
             .padding(horizontal = 10.dp)
-    ){
+    ) {
         Box(
             modifier = Modifier
                 .border(2.dp, Color.Yellow, CircleShape)
                 .background(Color.Yellow, CircleShape)
-                .size(70.dp),
+                .size(70.dp)
+                .clickable {
+                    onClick()
+                },
             contentAlignment = Alignment.Center
-        ){
-            Image(
-                painter = painterResource(id = person.icon),
-                contentDescription = "Person DP",
-                modifier = Modifier
-                    .size(65.dp)
-            )
+        ) {
+            if (imageUrl.isNullOrEmpty()) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_user),
+                    contentDescription = "Person DP",
+                    modifier = Modifier
+                        .size(65.dp)
+                )
+            } else {
+                Image(
+                    painter = rememberAsyncImagePainter(model = imageUrl),
+                    contentDescription = "Person DP",
+                    modifier = Modifier
+                        .size(65.dp)
+                )
+            }
         }
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            person.name,
+            name ?: "",
             style = TextStyle(
                 color = Color.White,
                 fontSize = 13.sp

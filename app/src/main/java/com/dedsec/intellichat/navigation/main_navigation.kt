@@ -11,6 +11,7 @@ import com.dedsec.intellichat.screens.ChatScreen
 import com.dedsec.intellichat.screens.HomeScreen
 import com.dedsec.intellichat.screens.LoginScreen
 import com.dedsec.intellichat.screens.SignUpScreen
+import com.dedsec.intellichat.screens.SingleStatusScreen
 import com.dedsec.intellichat.screens.StartScreen
 
 @Composable
@@ -32,11 +33,11 @@ fun MainNavigation() {
         }
         composable("$Chat/{chatId}") {
             val chatId = it.arguments?.getString("chatId")
-            chatId.let {
+            chatId?.let {
                 ChatScreen(
                     navHostController,
                     vm,
-                    chatId?: ""
+                    chatId
                 )
             }
         }
@@ -58,6 +59,16 @@ fun MainNavigation() {
                 vm
             )
         }
+        composable("$Single_Status/{userId}") {
+            val userId = it.arguments?.getString("userId")
+            userId?.let {
+                SingleStatusScreen(
+                    navHostController,
+                    vm,
+                    userId
+                )
+            }
+        }
     }
 }
 
@@ -67,3 +78,4 @@ const val Chat = "chat_screen"
 const val Login = "login_screen"
 const val SignUp = "signup_screen"
 const val Profile = "profile_screen"
+const val Single_Status = "single_status_screen"

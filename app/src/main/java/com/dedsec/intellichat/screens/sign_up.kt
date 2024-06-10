@@ -45,6 +45,7 @@ import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.ProgressionBar
 import com.dedsec.intellichat.components.viewModel
 import com.dedsec.intellichat.navigation.Login
+import com.dedsec.intellichat.navigation.SignUp
 import com.dedsec.intellichat.ui.theme.loginFont
 import com.dedsec.intellichat.ui.theme.singUpTextFont
 
@@ -328,7 +329,7 @@ fun SignUpScreen(
                 modifier = Modifier
                     .clickable {
                         navHostController.navigate(Login) {
-                            popUpTo(Login) {
+                            popUpTo(SignUp) {
                                 inclusive = true
                             }
                         }
