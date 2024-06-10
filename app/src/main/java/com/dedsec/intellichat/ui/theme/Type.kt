@@ -52,3 +52,4 @@ val loginFont = FontFamily(
 val singUpTextFont = FontFamily(
     Font(resId = R.font.nunito_regular)
 )
+

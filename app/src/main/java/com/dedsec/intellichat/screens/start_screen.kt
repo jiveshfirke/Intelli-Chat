@@ -2,6 +2,7 @@ package com.dedsec.intellichat.screens
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -28,6 +30,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -36,6 +41,9 @@ import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.CheckSignedIn
 import com.dedsec.intellichat.components.viewModel
 import com.dedsec.intellichat.navigation.Login
+import com.dedsec.intellichat.ui.theme.appNameFont
+import com.dedsec.intellichat.ui.theme.loginFont
+import com.dedsec.intellichat.ui.theme.welcomeFont
 
 @Composable
 fun StartScreen(
@@ -48,29 +56,42 @@ fun StartScreen(
             .fillMaxSize()
             .background(Color.Black)
     ){
-        Column(
+        Image(
+            painter = painterResource(id = R.drawable.welcome_page_two),
+            contentDescription = null,
+            contentScale = ContentScale.Crop,
             modifier = Modifier
-                .fillMaxWidth()
-                .background(Color.Black)
+                .fillMaxSize()
+        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier
+                .fillMaxSize()
         ) {
-            Image(
-                painter = painterResource(id = R.drawable.background),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth
-            )
-
-            Spacer(modifier = Modifier.height(40.dp))
 
             Text(
-                text = "STAY CONNECTED\nWITH YOUR FRIENDS\nAND FAMILY",
+                text = "IntelliChat",
                 style = TextStyle(
-                    color = Color.White,
-                    fontSize = 36.sp,
-                    fontWeight = FontWeight.Bold
+                    color = Color.Black,
+                    fontSize = 50.sp,
+                    fontFamily = appNameFont
                 ),
                 modifier = Modifier
-                    .padding(horizontal = 20.dp, vertical = 20.dp)
+                    .padding(top = 200.dp)
             )
+
+            Spacer(modifier = Modifier.paddingFromBaseline(top = 325.dp))
+            
+            Text(
+                text = "It's easy to chat intelligently",
+                fontSize = 30.sp,
+                fontWeight = FontWeight.W800,
+                fontStyle = FontStyle.Normal,
+                fontFamily = FontFamily(Font(R.font.dmserif_text_regular)),
+                letterSpacing = 1.sp
+            )
+
+            Spacer(modifier = Modifier.paddingFromBaseline(20.dp))
 
             Row (
                 modifier = Modifier
@@ -96,14 +117,17 @@ fun StartScreen(
                         Modifier.size(20.dp),
                     )
                 }
+
                 Spacer(modifier = Modifier.width(20.dp))
 
                 Text(
                     "Secure, private messaging",
                     style = TextStyle(
-                        color = Color.White,
-                        fontSize = 16.sp,
-                        fontWeight = FontWeight.Bold
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 0.8.sp,
+                        fontFamily = appNameFont
                     )
                 )
 
@@ -114,19 +138,22 @@ fun StartScreen(
             onClick = { navHostController.navigate(Login) },
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
-                .align(Alignment.BottomCenter),
+                .align(Alignment.BottomCenter)
+                .padding(60.dp)
+                .size(70.dp),
             colors = ButtonDefaults.buttonColors(
-                contentColor = Color.Black,
-                containerColor = Color.White
+                contentColor = Color.White,
+                containerColor = Color(0xFFFF55A1),
             ),
-            contentPadding = PaddingValues(0.dp, 15.dp)
+            elevation = ButtonDefaults.elevatedButtonElevation(10.dp)
         ) {
             Text(
                 text = "Get Started",
                 style = TextStyle(
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Bold
+                    fontSize = 28.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = loginFont,
+                    letterSpacing = 0.8.sp
                 )
             )
         }
