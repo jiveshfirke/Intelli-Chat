@@ -3,6 +3,7 @@ package com.dedsec.intellichat.components
 import android.net.Uri
 import android.util.Log
 import androidx.compose.runtime.mutableStateOf
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
 import com.dedsec.intellichat.navigation.Home
@@ -11,6 +12,9 @@ import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.storage.FirebaseStorage
+import com.google.mlkit.nl.smartreply.SmartReply
+import com.google.mlkit.nl.smartreply.SmartReplySuggestion
+import com.google.mlkit.nl.smartreply.TextMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.util.Calendar
 import java.util.UUID
@@ -34,6 +38,7 @@ class viewModel @Inject constructor(
     var currentChatMessageListener: ListenerRegistration? = null
     val statusList = mutableStateOf<List<StatusData>>(listOf())
     val inProgressStatus = mutableStateOf(false)
+    val smartSugestion = MutableLiveData<List<SmartReplySuggestion>>()
 
     init {
         val currentUser = auth.currentUser
@@ -55,6 +60,7 @@ class viewModel @Inject constructor(
                     chatMessages.value = snapshot.documents.mapNotNull {
                         it.toObject(MessageData::class.java)
                     }.sortedBy { it.timestamp }
+                    getConv()
                     inProgressChatMessages.value = false
                 }
             }
@@ -208,6 +214,22 @@ class viewModel @Inject constructor(
                 Log.i("viewModel", "Failed to upload image $it")
                 inProgress.value = false
             }
+    }
+    fun getConv(){
+        val conv: ArrayList<TextMessage> = ArrayList()
+        chatMessages.value.forEach {
+            conv.add(TextMessage.createForRemoteUser(it.message?: "", System.currentTimeMillis(), it.senderId?: ""))
+        }
+
+        val smartReply = SmartReply.getClient()
+        if (conv.isNotEmpty()) {
+            smartReply.suggestReplies(conv).addOnSuccessListener {
+                if (it.suggestions.isNotEmpty()) {
+                    smartSugestion.value = it.suggestions
+                }
+            }
+        }
+
     }
 
     fun addChat(addChatNumber: String) {

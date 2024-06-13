@@ -2,6 +2,7 @@ package com.dedsec.intellichat.screens
 
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -22,14 +23,15 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -40,16 +42,12 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.rememberNavController
 import coil.compose.rememberAsyncImagePainter
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.viewModel
-import com.dedsec.intellichat.data.Person
 
 @Composable
 fun ChatScreen(
@@ -170,44 +168,83 @@ fun ChatScreen(
 
                 }
             }
-            TextField(
-                value = message.value,
-                onValueChange = {
-                    message.value = it
-                },
+            Column (
                 modifier = Modifier
-                    .padding(20.dp)
+                    .align(Alignment.BottomCenter)
+            ){
+                val suggestionList = vm.smartSugestion.observeAsState()
+                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
+                    .padding(start = 4.dp, end = 4.dp)
                     .fillMaxWidth()
-                    .align(Alignment.BottomCenter),
-                shape = RoundedCornerShape(100),
-                colors = TextFieldDefaults.colors(
-                    focusedIndicatorColor = Color.Transparent,
-                    focusedContainerColor = Color.LightGray,
-                    unfocusedIndicatorColor = Color.Transparent
-                ),
-                placeholder = {
-                    Text(text = "Message here")
-                },
-                leadingIcon = {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-                },
-                trailingIcon = {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.Send,
-                        contentDescription = "send",
-                        modifier = Modifier
-                            .clickable {
-                                if (message.value.isEmpty()) {
-                                    Toast.makeText(context, "Message is empty", Toast.LENGTH_SHORT)
-                                        .show()
-                                } else {
-                                    vm.sendMessage(chatId = chatId, message = message.value)
-                                    message.value = ""
+                ) {
+                    if (suggestionList.value?.isNotEmpty() == true) {
+                        suggestionList.value!!.forEach { item ->
+                            Surface(
+                                color = Color.Transparent,
+                                shape = RoundedCornerShape(16.dp),
+                                border = BorderStroke(width = 1.dp, color = Color.LightGray),
+                                modifier = Modifier
+                                    .padding(horizontal = 4.dp)
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .clickable{
+                                        message.value = item.text
+                                    }
+                            ) {
+                                Row(modifier = Modifier
+                                    .padding(start = 4.dp, end = 4.dp)
+                                ){
+                                    Text(text = item.text, color = Color.Black, modifier = Modifier.padding(start = 10.dp,
+                                        end = 8.dp, top = 8.dp, bottom = 8.dp))
                                 }
                             }
-                    )
+
+                        }
+                    }
                 }
-            )
+
+
+                TextField(
+                    value = message.value,
+                    onValueChange = {
+                        message.value = it
+                    },
+                    modifier = Modifier
+                        .padding(20.dp)
+                        .fillMaxWidth(),
+                    shape = RoundedCornerShape(100),
+                    colors = TextFieldDefaults.colors(
+                        focusedIndicatorColor = Color.Transparent,
+                        focusedContainerColor = Color.LightGray,
+                        unfocusedIndicatorColor = Color.Transparent
+                    ),
+                    placeholder = {
+                        Text(text = "Message here")
+                    },
+                    leadingIcon = {
+                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                    },
+                    trailingIcon = {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.Send,
+                            contentDescription = "send",
+                            modifier = Modifier
+                                .clickable {
+                                    if (message.value.isEmpty()) {
+                                        Toast.makeText(
+                                            context,
+                                            "Message is empty",
+                                            Toast.LENGTH_SHORT
+                                        )
+                                            .show()
+                                    } else {
+                                        vm.sendMessage(chatId = chatId, message = message.value)
+                                        message.value = ""
+                                    }
+                                }
+                        )
+                    }
+                )
+            }
         }
     }
 }
