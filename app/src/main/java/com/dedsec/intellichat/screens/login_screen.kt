@@ -109,7 +109,8 @@ fun LoginScreen(
                 .padding(bottom = imeHeight)
                 .verticalScroll(scrollState),
         ) {
-            Spacer(Modifier.height(20.dp))
+
+            Spacer(Modifier.height(10.dp))
             LoginText()
 
             Column (
@@ -225,6 +226,7 @@ fun LoginScreen(
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(220.dp))
 
                 ElevatedButton(
                     modifier = Modifier
@@ -246,7 +248,7 @@ fun LoginScreen(
                 val signUpText = buildAnnotatedString {
                     withStyle(
                         style = SpanStyle(
-                            color = Color.Black,
+                            color = Color.White,
                             fontSize = 20.sp,
                             fontFamily = singUpTextFont,
                             letterSpacing = 0.8.sp
@@ -256,7 +258,7 @@ fun LoginScreen(
                     }
                     withStyle(
                         style = SpanStyle(
-                            color = Color.Black,
+                            color = Color.White,
                             fontSize = 22.sp,
                             fontFamily = singUpTextFont,
                             textDecoration = TextDecoration.Underline,
@@ -268,7 +270,7 @@ fun LoginScreen(
                 }
 
                 Text(
-                    signUpText,
+                    text = signUpText,
                     modifier = Modifier
                         .clickable {
                             navHostController.navigate(SignUp) {

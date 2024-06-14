@@ -327,6 +327,7 @@ fun SignUpScreen(
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))
+                Spacer(modifier = Modifier.height(120.dp))
 
                 ElevatedButton(
                     modifier = Modifier
