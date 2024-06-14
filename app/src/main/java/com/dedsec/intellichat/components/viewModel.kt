@@ -1,7 +1,9 @@
 package com.dedsec.intellichat.components
 
+import android.content.Context
 import android.net.Uri
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -16,7 +18,9 @@ import com.google.mlkit.nl.smartreply.SmartReply
 import com.google.mlkit.nl.smartreply.SmartReplySuggestion
 import com.google.mlkit.nl.smartreply.TextMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
 
@@ -59,7 +63,13 @@ class viewModel @Inject constructor(
                 if (snapshot != null) {
                     chatMessages.value = snapshot.documents.mapNotNull {
                         it.toObject(MessageData::class.java)
-                    }.sortedBy { it.timestamp }
+                    }.sortedBy {
+                        val timestampString = it.timestamp
+                        val dateFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH)
+                        val date = dateFormat.parse(timestampString)
+                        date.time
+                    }
+                    Log.i("viewmodel", "${chatMessages.value}")
                     getConv()
                     inProgressChatMessages.value = false
                 }
@@ -71,7 +81,7 @@ class viewModel @Inject constructor(
         currentChatMessageListener = null
     }
 
-    fun loginIn(email: String, password: String, navHostController: NavHostController) {
+    fun loginIn(email: String, password: String, navHostController: NavHostController, context: Context) {
         inProgress.value = true
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { result ->
@@ -82,15 +92,20 @@ class viewModel @Inject constructor(
                     auth.currentUser?.uid?.let {
                         getUserData(it)
                     }
+                    Toast.makeText(context,"Successfully signed in", Toast.LENGTH_LONG).show()
                     navHostController.navigate(Home) {
                         popUpTo(0)
                     }
                 } else {
                     Log.i("viewModel", "Login Failed")
+                    inProgress.value = false
+                    Toast.makeText(context,"Signed in Failed", Toast.LENGTH_LONG).show()
                 }
             }
             .addOnFailureListener {
                 Log.i("viewModel", "Login Failed $it")
+                inProgress.value = false
+                Toast.makeText(context,"Signed in Failed", Toast.LENGTH_LONG).show()
             }
     }
 
@@ -99,7 +114,8 @@ class viewModel @Inject constructor(
         phonenumber: String,
         email: String,
         password: String,
-        navHostController: NavHostController
+        navHostController: NavHostController,
+        context: Context
     ) {
         inProgress.value = true
 
@@ -114,20 +130,27 @@ class viewModel @Inject constructor(
                                 navHostController.navigate(Home) {
                                     popUpTo(0)
                                 }
+                                Toast.makeText(context, "Successful", Toast.LENGTH_LONG).show()
                                 Log.i("viewModel", "Successfully created user")
-
                             } else {
                                 // Handle unsuccessful sign-up
+                                Toast.makeText(context, "Failed", Toast.LENGTH_LONG).show()
+                                inProgress.value = false
                             }
                         }
                         .addOnFailureListener { exception ->
                             Log.i("viewModel", "user creation failed $exception")
+                            Toast.makeText(context, "Failed to Sign up", Toast.LENGTH_LONG).show()
                             inProgress.value = false
                         }
                 } else {
                     Log.i("viewModel", "Number already exists")
                     inProgress.value = false
                 }
+            }
+            .addOnFailureListener {
+                Toast.makeText(context, "Failed to Sign up ${it.message}", Toast.LENGTH_LONG).show()
+                inProgress.value = false
             }
     }
 
@@ -192,10 +215,25 @@ class viewModel @Inject constructor(
     }
 
     fun uploadProfileImage(uri: Uri) {
-        uploadImage(uri) {
+        uploadImage(uri) {imageUrl ->
             createOrUpdateProfile(
-                imageUrl = it.toString()
+                imageUrl = imageUrl.toString()
             )
+            db.collection("Chats").where(
+                Filter.or(
+                    Filter.equalTo("user1.number", userData.value?.userId),
+                    Filter.equalTo("user2.number", userData.value?.userId)
+                )
+            ).get().addOnSuccessListener {value ->
+                chats.value.forEach {
+                    val currentUser = if (it.user1.userId == userData.value?.userId) {
+                        "user1.imageUrl"
+                    } else {
+                        "user2.imageUrl"
+                    }
+                    db.collection("Chats").document(it.chatId?: "").update(currentUser, imageUrl.toString())
+                }
+            }
         }
     }
 
