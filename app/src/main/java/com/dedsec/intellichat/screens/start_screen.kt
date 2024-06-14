@@ -41,6 +41,7 @@ import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.CheckSignedIn
 import com.dedsec.intellichat.components.viewModel
 import com.dedsec.intellichat.navigation.Login
+import com.dedsec.intellichat.ui.theme.RedNormal2
 import com.dedsec.intellichat.ui.theme.appNameFont
 import com.dedsec.intellichat.ui.theme.loginFont
 import com.dedsec.intellichat.ui.theme.welcomeFont
@@ -107,7 +108,7 @@ fun StartScreen(
                                 bottomEnd = 80.dp
                             )
                         )
-                        .background(Color(0XFF00FFA3))
+                        .background(Color.Green)
                         .size(24.dp),
                     contentAlignment = Alignment.Center
                 ){
@@ -143,7 +144,7 @@ fun StartScreen(
                 .size(70.dp),
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color.White,
-                containerColor = Color(0xFFFF55A1),
+                containerColor = RedNormal2,
             ),
             elevation = ButtonDefaults.elevatedButtonElevation(10.dp)
         ) {
