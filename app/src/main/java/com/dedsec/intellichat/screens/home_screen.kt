@@ -30,6 +30,8 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -43,12 +45,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.withStyle
@@ -64,6 +70,7 @@ import com.dedsec.intellichat.navigation.Chat
 import com.dedsec.intellichat.navigation.Profile
 import com.dedsec.intellichat.navigation.Single_Status
 import com.dedsec.intellichat.navigation.Start
+import com.dedsec.intellichat.ui.theme.welcomeFont
 
 @Composable
 fun HomeScreen(
@@ -77,7 +84,7 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color.White)
             .safeDrawingPadding()
             .padding(top = 15.dp)
     ) {
@@ -87,60 +94,71 @@ fun HomeScreen(
         ) {
             Header(vm.userData.value?.name)
 
-            LazyRow {
-                item {
-                    val launcher = rememberLauncherForActivityResult(
-                        contract = ActivityResultContracts.GetContent()
-                    ) { uri ->
-                        uri?.let {
-                            vm.uploadStatus(it)
-                        }
-                    }
-                    AddStoryLayout(onClick = { launcher.launch("image/*") })
-                    Spacer(modifier = Modifier.width(10.dp))
-                }
-                val statusList = vm.statusList.value
-                val userData = vm.userData.value
-                val myStatus = statusList.filter {
-                    it.user.userId == userData?.userId
-                }
-
-                val otherStatus = statusList.filter {
-                    it.user.userId != userData?.userId
-                }
-                if (vm.inProgressStatus.value) {
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
+            ) {
+                LazyRow(
+                    modifier = Modifier
+                        .background(Color(0xFFFF6EAF))
+                        .fillMaxWidth()
+                ) {
                     item {
-                        ProgressionBar()
+                        val launcher = rememberLauncherForActivityResult(
+                            contract = ActivityResultContracts.GetContent()
+                        ) { uri ->
+                            uri?.let {
+                                vm.uploadStatus(it)
+                            }
+                        }
+                        AddStoryLayout(onClick = { launcher.launch("image/*") })
+                        Spacer(modifier = Modifier.width(10.dp))
                     }
-                } else {
-                    if (myStatus.isNotEmpty()) {
+                    val statusList = vm.statusList.value
+                    val userData = vm.userData.value
+                    val myStatus = statusList.filter {
+                        it.user.userId == userData?.userId
+                    }
+
+                    val otherStatus = statusList.filter {
+                        it.user.userId != userData?.userId
+                    }
+                    if (vm.inProgressStatus.value) {
                         item {
+                            ProgressionBar()
+                        }
+                    } else {
+                        if (myStatus.isNotEmpty()) {
+                            item {
+                                UserStoryLayout(
+                                    name = myStatus[0].user.name,
+                                    imageUrl = myStatus[0].user.imageUrl,
+                                    onClick = { navHostController.navigate("$Single_Status/${userData?.userId}") }
+                                )
+                            }
+                        }
+                        val uniqueUsers = otherStatus.map { it.user }.toSet().toList()
+                        items(uniqueUsers) { user ->
                             UserStoryLayout(
-                                name = myStatus[0].user.name,
-                                imageUrl = myStatus[0].user.imageUrl,
-                                onClick = { navHostController.navigate("$Single_Status/${userData?.userId}") }
+                                name = user.name,
+                                imageUrl = user.imageUrl,
+                                onClick = { navHostController.navigate("$Single_Status/${user.userId}") }
                             )
                         }
-                    }
-                    val uniqueUsers = otherStatus.map { it.user }.toSet().toList()
-                    items(uniqueUsers) { user ->
-                        UserStoryLayout(
-                            name = user.name,
-                            imageUrl = user.imageUrl,
-                            onClick = { navHostController.navigate("$Single_Status/${user.userId}") }
-                        )
                     }
                 }
             }
 
             Box(
                 modifier = Modifier
-                    .padding(top = 20.dp)
+                    .padding(top = 0.dp)
+                    .background(Color(0xFFFF6EAF))
                     .fillMaxSize()
                     .clip(
                         RoundedCornerShape(
-                            topStart = 30.dp,
-                            topEnd = 30.dp
+                            topStart = 80.dp,
+                            topEnd = 80.dp
                         )
                     )
                     .background(Color.White),
@@ -151,7 +169,7 @@ fun HomeScreen(
                     modifier = Modifier
                         .fillMaxSize()
                 ) {
-                    BottomSheet()
+//                    BottomSheet()
                     val showDialog = remember {
                         mutableStateOf(false)
                     }
@@ -211,26 +229,35 @@ fun HomeScreen(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = null,
-                tint = Color.White,
+                tint = Color.Black,
                 modifier = Modifier
                     .clickable {
                         isVisible.value = !isVisible.value
                     }
+                    .padding(end = 10.dp)
             )
             DropdownMenu(
                 expanded = isVisible.value,
                 onDismissRequest = { isVisible.value = !isVisible.value },
-                modifier = Modifier,
-
+                modifier = Modifier
+                    .background(Color.White),
                 ) {
                 DropdownMenuItem(
-                    text = { Text(text = "Profile") },
+                    text = {
+                        Text(
+                            text = "Profile",
+                            fontSize = 18.sp
+                        )},
                     onClick = {
                         navHostController.navigate(Profile)
                     }
                 )
                 DropdownMenuItem(
-                    text = { Text(text = "Logout") },
+                    text = {
+                        Text(
+                            text = "Logout",
+                            fontSize = 18.sp
+                        ) },
                     onClick = {
                         vm.signOut()
                         navHostController.navigate(Start) {
@@ -262,15 +289,23 @@ fun addChatFunction(
                 Button(
                     onClick = {
                         addChat(addChatNumber.value)
-                    }
+                    },
+                    modifier = Modifier
+                        .background(Color.White),
+                    colors = ButtonDefaults.buttonColors(Color.White),
+                    shape = RoundedCornerShape(30.dp)
                 ) {
                     Text(
-                        "Add"
+                        text = "Add",
+                        color = Color.Black
                     )
                 }
             },
             title = {
-                Text(text = "Add Chat")
+                Text(
+                    text = "Add Chat",
+
+                )
             },
             text = {
                 TextField(
@@ -299,28 +334,33 @@ fun AddChatRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 10.dp),
+                .padding(top = 20.dp, start = 30.dp, end = 20.dp, bottom = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 modifier = Modifier
-                    .size(65.dp)
+                    .size(50.dp)
                     .clip(CircleShape)
-                    .background(Color.Gray),
+                    .background(Color(0xFF2D9596)),
                 contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
+                    tint = Color.White,
+                    modifier = Modifier
+                        .size(35.dp),
                     contentDescription = null
                 )
             }
             Spacer(modifier = Modifier.width(10.dp))
+
             Text(
                 "Add Chat",
                 style = TextStyle(
-                    fontSize = 16.sp,
+                    fontSize = 20.sp,
                     color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = welcomeFont
                 ),
             )
         }
@@ -370,6 +410,8 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     contentDescription = "Person Profile",
                     modifier = Modifier
                         .size(50.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
             } else {
                 Image(
@@ -377,6 +419,8 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     contentDescription = "Person Profile",
                     modifier = Modifier
                         .size(50.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
             }
             Spacer(
@@ -418,7 +462,7 @@ fun Header(name: String?) {
     val text = buildAnnotatedString {
         withStyle(
             style = SpanStyle(
-                color = Color.White,
+                color = Color.Black,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.W300
             )
@@ -428,11 +472,11 @@ fun Header(name: String?) {
         withStyle(
             style = SpanStyle(
                 fontSize = 20.sp,
-                color = Color.White,
+                color = Color.Black,
                 fontWeight = FontWeight.Bold
             )
         ) {
-            append(name?: "")
+            append(name ?: "")
         }
     }
     Text(
@@ -445,13 +489,23 @@ fun Header(name: String?) {
 @Composable
 fun AddStoryLayout(onClick: () -> Unit) {
     Column(
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start = 20.dp)
+            .padding(start = 32.dp, top = 16.dp, bottom = 16.dp)
     ) {
+        Text(
+            text = "View Status",
+            style = TextStyle(
+                color = Color.White,
+                fontSize = 16.sp
+            ),
+            modifier = Modifier
+        )
+        Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
-                .border(2.dp, Color.Yellow, CircleShape)
-                .background(Color.Yellow, CircleShape)
+//                .border(width = 3.dp, color = Color.Black, shape = CircleShape)
+                .background(Color.White, CircleShape)
                 .size(70.dp)
                 .clickable {
                     onClick()
@@ -459,26 +513,26 @@ fun AddStoryLayout(onClick: () -> Unit) {
             contentAlignment = Alignment.Center
         ) {
             Box(
-                modifier = Modifier
-                    .size(20.dp)
-                    .background(Color.Black, CircleShape),
-                contentAlignment = Alignment.Center
+//                modifier = Modifier
+//                    .size(20.dp)
+//                    .background(Color.White, CircleShape),
+//                contentAlignment = Alignment.Center
             ) {
                 Icon(
                     imageVector = Icons.Default.Add,
                     contentDescription = "Add",
-                    tint = Color.Yellow,
+                    tint = Color.Black,
                     modifier = Modifier
-                        .size(12.dp)
+                        .size(40.dp)
                 )
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "Add Story",
+            "Your Status",
             style = TextStyle(
                 color = Color.White,
-                fontSize = 13.sp
+                fontSize = 16.sp
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
@@ -489,14 +543,14 @@ fun AddStoryLayout(onClick: () -> Unit) {
 @Composable
 fun UserStoryLayout(name: String?, imageUrl: String?, onClick: () -> Unit) {
     Column(
+        verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(horizontal = 10.dp)
+            .padding(start = 16.dp, top = 41.dp, bottom = 16.dp)
     ) {
         Box(
             modifier = Modifier
-                .border(2.dp, Color.Yellow, CircleShape)
-                .background(Color.Yellow, CircleShape)
                 .size(70.dp)
+                .background(Color.White, CircleShape)
                 .clickable {
                     onClick()
                 },
@@ -507,14 +561,18 @@ fun UserStoryLayout(name: String?, imageUrl: String?, onClick: () -> Unit) {
                     painter = painterResource(id = R.drawable.ic_user),
                     contentDescription = "Person DP",
                     modifier = Modifier
-                        .size(65.dp)
+                        .size(70.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop,
                 )
             } else {
                 Image(
                     painter = rememberAsyncImagePainter(model = imageUrl),
                     contentDescription = "Person DP",
                     modifier = Modifier
-                        .size(65.dp)
+                        .size(70.dp)
+                        .clip(CircleShape),
+                    contentScale = ContentScale.Crop
                 )
             }
         }
@@ -523,7 +581,7 @@ fun UserStoryLayout(name: String?, imageUrl: String?, onClick: () -> Unit) {
             name ?: "",
             style = TextStyle(
                 color = Color.White,
-                fontSize = 13.sp
+                fontSize = 16.sp
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)

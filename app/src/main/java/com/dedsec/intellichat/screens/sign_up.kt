@@ -116,7 +116,6 @@ fun SignUpScreen(
     }
 
     Box {
-
         BackgroundImageLogin()
         Column(
             modifier = Modifier

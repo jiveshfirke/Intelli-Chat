@@ -19,6 +19,7 @@ firebaseStorage = "21.0.0"
 lifecycleViewmodel = "2.8.2"
 runtimeLivedata = "1.6.8"
 smartReply = "17.0.3"
+smartReplyCommon = "16.1.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -49,6 +50,7 @@ firebase-auth = { group = "com.google.firebase", name = "firebase-auth", version
 firebase-firestore = { group = "com.google.firebase", name = "firebase-firestore", version.ref = "firebaseFirestore" }
 firebase-storage = { group = "com.google.firebase", name = "firebase-storage", version.ref = "firebaseStorage" }
 smart-reply = { module = "com.google.mlkit:smart-reply", version.ref = "smartReply" }
+smart-reply-common = { group = "com.google.mlkit", name = "smart-reply-common", version.ref = "smartReplyCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
