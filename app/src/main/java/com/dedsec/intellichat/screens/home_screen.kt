@@ -3,6 +3,7 @@ package com.dedsec.intellichat.screens
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,8 +35,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -54,6 +57,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
@@ -70,6 +74,7 @@ import com.dedsec.intellichat.navigation.Chat
 import com.dedsec.intellichat.navigation.Profile
 import com.dedsec.intellichat.navigation.Single_Status
 import com.dedsec.intellichat.navigation.Start
+import com.dedsec.intellichat.ui.theme.appNameFont
 import com.dedsec.intellichat.ui.theme.welcomeFont
 
 @Composable
@@ -157,8 +162,8 @@ fun HomeScreen(
                     .fillMaxSize()
                     .clip(
                         RoundedCornerShape(
-                            topStart = 80.dp,
-                            topEnd = 80.dp
+                            topStart = 60.dp,
+                            topEnd = 60.dp
                         )
                     )
                     .background(Color.White),
@@ -246,7 +251,9 @@ fun HomeScreen(
                     text = {
                         Text(
                             text = "Profile",
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.W400,
+                            letterSpacing = 1.sp
                         )},
                     onClick = {
                         navHostController.navigate(Profile)
@@ -256,7 +263,9 @@ fun HomeScreen(
                     text = {
                         Text(
                             text = "Logout",
-                            fontSize = 18.sp
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.W400,
+                            letterSpacing = 1.sp
                         ) },
                     onClick = {
                         vm.signOut()
@@ -285,33 +294,44 @@ fun addChatFunction(
                 onDismiss()
                 addChatNumber.value = ""
             },
+            containerColor = Color.White,
             confirmButton = {
-                Button(
+                OutlinedButton(
                     onClick = {
                         addChat(addChatNumber.value)
                     },
-                    modifier = Modifier
-                        .background(Color.White),
-                    colors = ButtonDefaults.buttonColors(Color.White),
-                    shape = RoundedCornerShape(30.dp)
+                    modifier = Modifier,
+                    shape = RoundedCornerShape(30.dp),
+                    border = BorderStroke(1.5.dp, Color(0xFFFF6EAF)),
                 ) {
                     Text(
                         text = "Add",
-                        color = Color.Black
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                        fontFamily = FontFamily(Font(R.font.nunito_regular))
                     )
                 }
             },
             title = {
                 Text(
-                    text = "Add Chat",
-
+                    text = "Enter Phone Number",
+                    fontSize = 22.sp,
+                    fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                    letterSpacing = (-1).sp
                 )
             },
             text = {
                 TextField(
                     value = addChatNumber.value,
                     onValueChange = { addChatNumber.value = it },
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White),
+                    textStyle = TextStyle(
+                        color = Color.Black,
+                        fontSize = 20.sp,
+                    )
                 )
             }
         )
@@ -327,49 +347,23 @@ fun AddChatRow(
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .clickable {
-                showDialog.value = true
-            }
+            .height(70.dp)
+            .padding(top = 10.dp)
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = 20.dp, start = 30.dp, end = 20.dp, bottom = 10.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Box(
-                modifier = Modifier
-                    .size(50.dp)
-                    .clip(CircleShape)
-                    .background(Color(0xFF2D9596)),
-                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    tint = Color.White,
-                    modifier = Modifier
-                        .size(35.dp),
-                    contentDescription = null
-                )
-            }
-            Spacer(modifier = Modifier.width(10.dp))
 
+        OutlinedButton(
+            onClick = { showDialog.value = true },
+            modifier = Modifier,
+            border = BorderStroke(1.5.dp, Color(0xFFFF6EAF)),
+            shape = RoundedCornerShape(30.dp)
+        ) {
             Text(
-                "Add Chat",
-                style = TextStyle(
-                    fontSize = 20.sp,
-                    color = Color.Black,
-                    fontWeight = FontWeight.Bold,
-                    fontFamily = welcomeFont
-                ),
+                text = "Add Chat",
+                fontSize = 20.sp,
+                fontFamily = FontFamily(Font(R.font.montserrat_regular)),
+                letterSpacing = 0.1.sp,
             )
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = Color.LightGray,
-            modifier = Modifier.fillMaxWidth(0.9f)
-        )
     }
     if (showDialog.value) {
         addChatFunction(
@@ -398,8 +392,8 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
     ) {
         Row(
             Modifier
-                .height(80.dp)
-                .padding(horizontal = 20.dp, vertical = 10.dp)
+                .height(70.dp)
+                .padding(horizontal = 30.dp, vertical = 10.dp)
                 .fillMaxWidth(),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
@@ -424,24 +418,24 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                 )
             }
             Spacer(
-                modifier = Modifier
-                    .width(10.dp)
+                modifier = Modifier.width(12.dp)
             )
             Text(
                 chatuser.name ?: "",
                 style = TextStyle(
-                    fontSize = 18.sp,
+                    fontSize = 20.sp,
                     color = Color.Black,
-                    fontWeight = FontWeight.Bold
+                    fontWeight = FontWeight.W700,
+                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                    letterSpacing = 0.6.sp
                 )
             )
         }
-        Spacer(modifier = Modifier.height(5.dp))
-        HorizontalDivider(
-            thickness = 1.dp,
-            color = Color.LightGray,
-            modifier = Modifier.fillMaxWidth(0.9f)
-        )
+//        HorizontalDivider(
+//            thickness = 0.8.dp,
+//            color = Color.LightGray,
+//            modifier = Modifier.fillMaxWidth(0.84f)
+//        )
     }
 }
 
