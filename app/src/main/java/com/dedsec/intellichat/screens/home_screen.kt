@@ -6,7 +6,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -30,14 +29,9 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
-import androidx.compose.material3.FilledTonalButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -50,9 +44,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
@@ -76,8 +68,6 @@ import com.dedsec.intellichat.navigation.Chat
 import com.dedsec.intellichat.navigation.Profile
 import com.dedsec.intellichat.navigation.Single_Status
 import com.dedsec.intellichat.navigation.Start
-import com.dedsec.intellichat.ui.theme.appNameFont
-import com.dedsec.intellichat.ui.theme.welcomeFont
 
 @Composable
 fun HomeScreen(
@@ -248,7 +238,7 @@ fun HomeScreen(
                 onDismissRequest = { isVisible.value = !isVisible.value },
                 modifier = Modifier
                     .background(Color.White),
-                ) {
+            ) {
                 DropdownMenuItem(
                     text = {
                         Text(
@@ -256,7 +246,8 @@ fun HomeScreen(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.W400,
                             letterSpacing = 1.sp
-                        )},
+                        )
+                    },
                     onClick = {
                         navHostController.navigate(Profile)
                     }
@@ -268,7 +259,8 @@ fun HomeScreen(
                             fontSize = 18.sp,
                             fontWeight = FontWeight.W400,
                             letterSpacing = 1.sp
-                        ) },
+                        )
+                    },
                     onClick = {
                         vm.signOut()
                         navHostController.navigate(Start) {
@@ -447,18 +439,6 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
 }
 
 @Composable
-fun BottomSheet() {
-    Box(
-        modifier = Modifier
-            .padding(top = 15.dp)
-            .clip(RoundedCornerShape(90.dp))
-            .background(Color.Gray)
-            .width(90.dp)
-            .height(5.dp)
-    )
-}
-
-@Composable
 fun Header(name: String?) {
     val text = buildAnnotatedString {
         withStyle(
@@ -513,20 +493,13 @@ fun AddStoryLayout(onClick: () -> Unit) {
                 },
             contentAlignment = Alignment.Center
         ) {
-            Box(
-//                modifier = Modifier
-//                    .size(20.dp)
-//                    .background(Color.White, CircleShape),
-//                contentAlignment = Alignment.Center
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add",
-                    tint = Color.Black,
-                    modifier = Modifier
-                        .size(40.dp)
-                )
-            }
+            Icon(
+                imageVector = Icons.Default.Add,
+                contentDescription = "Add",
+                tint = Color.Black,
+                modifier = Modifier
+                    .size(40.dp)
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
         Text(

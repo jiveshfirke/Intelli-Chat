@@ -33,7 +33,6 @@ class viewModel @Inject constructor(
 
     var inProgress = mutableStateOf(false)
     var inProgressChat = mutableStateOf(false)
-    var eventMutableState = mutableStateOf<Event<String>?>(null)
     var signIn = mutableStateOf(false)
     val userData = mutableStateOf<UserData?>(null)
     val chats = mutableStateOf<List<ChatData>>(listOf())
@@ -69,7 +68,6 @@ class viewModel @Inject constructor(
                         val date = dateFormat.parse(timestampString)
                         date.time
                     }
-                    Log.i("viewmodel", "${chatMessages.value}")
                     getConv()
                     inProgressChatMessages.value = false
                 }
@@ -103,7 +101,7 @@ class viewModel @Inject constructor(
                 }
             }
             .addOnFailureListener {
-                Log.i("viewModel", "Login Failed $it")
+                Log.i("viewModel", "Login Failed ${it.message}")
                 inProgress.value = false
                 Toast.makeText(context,"Signed in Failed", Toast.LENGTH_LONG).show()
             }
@@ -253,6 +251,23 @@ class viewModel @Inject constructor(
                 inProgress.value = false
             }
     }
+
+    fun uploadStatusImage(uri: Uri, onSuccess: (Uri) -> Unit) {
+        inProgress.value = true
+        val storageRef = storage.reference
+        val uuid = UUID.randomUUID()
+        val imageRef = storageRef.child("status/$uuid")
+        val uploadTask = imageRef.putFile(uri)
+        uploadTask.addOnSuccessListener {
+            val result = it.metadata?.reference?.downloadUrl?.addOnSuccessListener(onSuccess)
+            inProgress.value = false
+            Log.i("viewModel", "Successfully uploaded Status")
+        }
+            .addOnFailureListener {
+                Log.i("viewModel", "Failed to upload image $it")
+                inProgress.value = false
+            }
+    }
     fun getConv(){
         val conv: ArrayList<TextMessage> = ArrayList()
         chatMessages.value.forEach {
@@ -267,7 +282,6 @@ class viewModel @Inject constructor(
                 }
             }
         }
-
     }
 
     fun addChat(addChatNumber: String) {
@@ -360,7 +374,7 @@ class viewModel @Inject constructor(
     }
 
     fun uploadStatus(it: Uri) {
-        uploadImage(it) {
+        uploadStatusImage(it) {
             createStatus(it.toString())
         }
     }

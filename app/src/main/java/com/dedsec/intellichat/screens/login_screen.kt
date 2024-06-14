@@ -95,9 +95,6 @@ fun LoginScreen(
             return
         } else {
             vm.loginIn(email = email, password = password, navHostController = navHostController, context = context)
-            navHostController.navigate(Home) {
-                popUpTo(0)
-            }
         }
     }
 

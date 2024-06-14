@@ -153,7 +153,7 @@ fun SignUpScreen(
                     maxLines = 1,
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_email_foreground),
+                            painter = painterResource(id = R.drawable.ic_user),
                             contentDescription = "",
                             modifier = Modifier.size(40.dp)
                         )
@@ -197,7 +197,7 @@ fun SignUpScreen(
                     maxLines = 1,
                     leadingIcon = {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_email_foreground),
+                            painter = painterResource(id = R.drawable.call),
                             contentDescription = "",
                             modifier = Modifier.size(40.dp)
                         )

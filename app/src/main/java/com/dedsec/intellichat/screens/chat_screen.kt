@@ -8,7 +8,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -39,7 +38,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -66,6 +64,7 @@ fun ChatScreen(
     val chatUser =
         if (vm.userData.value?.userId == currentChat.user1.userId) currentChat.user2 else currentChat.user1
 
+
     LaunchedEffect(key1 = Unit) {
         vm.populateMessages(chatId)
     }
@@ -83,7 +82,7 @@ fun ChatScreen(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceAround,
+            horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
 //                .padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 20.dp)
                 .padding(top = 0.dp, start = 0.dp, end = 0.dp, bottom = 20.dp)
@@ -94,6 +93,7 @@ fun ChatScreen(
                 contentDescription = "Add",
                 tint = Color.White,
                 modifier = Modifier
+                    .padding(start = 20.dp)
                     .size(32.dp)
                     .clickable {
                         navHostController.popBackStack()
@@ -106,7 +106,7 @@ fun ChatScreen(
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(top = 60.dp)
+                modifier = Modifier.padding(vertical = 20.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -130,12 +130,13 @@ fun ChatScreen(
                                 .border(
                                     width = 3.dp,
                                     color = Color(0xFFBB1660),
-                                    shape = CircleShape),
+                                    shape = CircleShape
+                                ),
                             contentScale = ContentScale.Crop
                         )
                     }
 
-            Spacer(modifier = Modifier.width(10.dp))
+                    Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
                         chatUser.name ?: "Unknown",
@@ -151,136 +152,128 @@ fun ChatScreen(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "MoreVert",
-                tint = Color(0xFFFF6EAF),
-                modifier = Modifier.size(24.dp)
+                tint = Color.White,
+                modifier = Modifier
+                    .padding(end = 20.dp)
+                    .size(24.dp)
             )
 
         }
 
-        Box(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color(0xFFFF6EAF))
-                .clip(
-                    RoundedCornerShape(
-                        topStart = 40.dp,
-                        topEnd = 40.dp
-                    )
-                )
+                .background(Color.White)
+                .weight(1f)
         ) {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Color.White)
-            ) {
-                items(vm.chatMessages.value) { msg ->
-                    val alignment =
-                        if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
-                    val color =
-                        if (msg.senderId == vm.userData.value?.userId) Color(0xFFFF6EAF) else Color.LightGray
-                    Column(
+            items(vm.chatMessages.value) { msg ->
+                val alignment =
+                    if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
+                val color =
+                    if (msg.senderId == vm.userData.value?.userId) Color(0xFFFF6EAF) else Color.LightGray
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
+                    Text(
+                        msg.message ?: "",
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(20.dp)
-                    ) {
-                        Text(
-                            msg.message ?: "",
-                            modifier = Modifier
-                                .clip(RoundedCornerShape(69))
-                                .background(color)
-                                .align(alignment)
-                                .padding(8.dp),
-                            fontSize = 18.sp
-                        )
-                    }
+                            .clip(RoundedCornerShape(69))
+                            .background(color)
+                            .align(alignment)
+                            .padding(8.dp),
+                        fontSize = 18.sp
+                    )
+                }
 
+            }
+        }
+        Column(
+            modifier = Modifier
+                .background(Color.White)
+                .padding(10.dp)
+        ) {
+            val suggestionList = vm.smartSugestion.observeAsState()
+            Row(
+                horizontalArrangement = Arrangement.End, modifier = Modifier
+                    .padding(start = 4.dp, end = 4.dp)
+                    .fillMaxWidth()
+            ) {
+                if (suggestionList.value?.isNotEmpty() == true) {
+                    suggestionList.value!!.forEach { item ->
+                        Surface(
+                            color = Color.Transparent,
+                            shape = RoundedCornerShape(16.dp),
+                            border = BorderStroke(width = 1.dp, color = Color.LightGray),
+                            modifier = Modifier
+                                .padding(horizontal = 4.dp)
+                                .clip(RoundedCornerShape(16.dp))
+                                .clickable {
+                                    message.value = item.text
+                                }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .padding(start = 4.dp, end = 4.dp)
+                            ) {
+                                Text(
+                                    text = item.text,
+                                    color = Color.Black,
+                                    modifier = Modifier.padding(
+                                        start = 10.dp,
+                                        end = 8.dp, top = 8.dp, bottom = 8.dp
+                                    )
+                                )
+                            }
+                        }
+
+                    }
                 }
             }
-            Column(
+
+
+            TextField(
+                value = message.value,
+                onValueChange = {
+                    message.value = it
+                },
                 modifier = Modifier
-                    .align(Alignment.BottomCenter)
-            ) {
-                val suggestionList = vm.smartSugestion.observeAsState()
-                Row(
-                    horizontalArrangement = Arrangement.End, modifier = Modifier
-                        .padding(start = 4.dp, end = 4.dp)
-                        .fillMaxWidth()
-                ) {
-                    if (suggestionList.value?.isNotEmpty() == true) {
-                        suggestionList.value!!.forEach { item ->
-                            Surface(
-                                color = Color.Transparent,
-                                shape = RoundedCornerShape(16.dp),
-                                border = BorderStroke(width = 1.dp, color = Color.LightGray),
-                                modifier = Modifier
-                                    .padding(horizontal = 4.dp)
-                                    .clip(RoundedCornerShape(16.dp))
-                                    .clickable {
-                                        message.value = item.text
-                                    }
-                            ) {
-                                Row(
-                                    modifier = Modifier
-                                        .padding(start = 4.dp, end = 4.dp)
-                                ) {
-                                    Text(
-                                        text = item.text,
-                                        color = Color.Black,
-                                        modifier = Modifier.padding(
-                                            start = 10.dp,
-                                            end = 8.dp, top = 8.dp, bottom = 8.dp
-                                        )
+                    .padding(top = 10.dp, start = 20.dp, end = 20.dp)
+                    .fillMaxWidth(),
+                shape = RoundedCornerShape(100),
+                colors = TextFieldDefaults.colors(
+                    focusedIndicatorColor = Color.Transparent,
+                    focusedContainerColor = Color.LightGray,
+                    unfocusedIndicatorColor = Color.Transparent
+                ),
+                placeholder = {
+                    Text(text = "Message here")
+                },
+                leadingIcon = {
+                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                },
+                trailingIcon = {
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.Send,
+                        contentDescription = "send",
+                        modifier = Modifier
+                            .clickable {
+                                if (message.value.isEmpty()) {
+                                    Toast.makeText(
+                                        context,
+                                        "Message is empty",
+                                        Toast.LENGTH_SHORT
                                     )
+                                        .show()
+                                } else {
+                                    vm.sendMessage(chatId = chatId, message = message.value)
+                                    message.value = ""
                                 }
                             }
-
-                        }
-                    }
+                    )
                 }
-
-
-                TextField(
-                    value = message.value,
-                    onValueChange = {
-                        message.value = it
-                    },
-                    modifier = Modifier
-                        .padding(20.dp)
-                        .fillMaxWidth(),
-                    shape = RoundedCornerShape(100),
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color.Transparent,
-                        focusedContainerColor = Color.LightGray,
-                        unfocusedIndicatorColor = Color.Transparent
-                    ),
-                    placeholder = {
-                        Text(text = "Message here")
-                    },
-                    leadingIcon = {
-                        Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
-                    },
-                    trailingIcon = {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.Send,
-                            contentDescription = "send",
-                            modifier = Modifier
-                                .clickable {
-                                    if (message.value.isEmpty()) {
-                                        Toast.makeText(
-                                            context,
-                                            "Message is empty",
-                                            Toast.LENGTH_SHORT
-                                        )
-                                            .show()
-                                    } else {
-                                        vm.sendMessage(chatId = chatId, message = message.value)
-                                        message.value = ""
-                                    }
-                                }
-                        )
-                    }
-                )
-            }
+            )
         }
     }
 }
