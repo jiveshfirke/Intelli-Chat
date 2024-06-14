@@ -33,12 +33,14 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -385,16 +387,21 @@ fun AddChatRow(
 
 @Composable
 fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
+    OutlinedCard(
+//        horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
+            .padding(horizontal = 25.dp, vertical = 5.dp)
             .clickable { onClick() }
+            .background(Color.White),
+        shape = RoundedCornerShape(60),
+        border = BorderStroke(width = 2.dp, color = Color(0xFFFF6EAF))
     ) {
         Row(
             Modifier
                 .height(70.dp)
-                .padding(horizontal = 30.dp, vertical = 10.dp)
-                .fillMaxWidth(),
+                .padding(horizontal = 10.dp, vertical = 10.dp)
+                .fillMaxWidth()
+                .background(Color.White),
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -423,7 +430,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
             Text(
                 chatuser.name ?: "",
                 style = TextStyle(
-                    fontSize = 20.sp,
+                    fontSize = 22.sp,
                     color = Color.Black,
                     fontWeight = FontWeight.W700,
                     fontFamily = FontFamily(Font(R.font.nunito_regular)),
