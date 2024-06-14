@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -38,6 +39,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -76,111 +78,133 @@ fun ChatScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.Black)
+            .background(Color(0xFFFF6EAF))
             .safeDrawingPadding()
     ) {
         Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceAround,
             modifier = Modifier
-                .padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 20.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
+//                .padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 20.dp)
+                .padding(top = 0.dp, start = 0.dp, end = 0.dp, bottom = 20.dp)
+                .fillMaxWidth()
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                 contentDescription = "Add",
                 tint = Color.White,
                 modifier = Modifier
-                    .size(24.dp)
+                    .size(32.dp)
                     .clickable {
                         navHostController.popBackStack()
                         vm.depopulateMessages()
                     }
             )
 
-            Spacer(modifier = Modifier.width(5.dp))
+//            Spacer(modifier = Modifier.width(5.dp))
 
-            if (chatUser.imageUrl.isNullOrEmpty()) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_user),
-                    contentDescription = "Profile picture",
-                    modifier = Modifier.size(35.dp),
-                    tint = Color.White
-                )
-            } else {
-                Image(
-                    painter = rememberAsyncImagePainter(model = chatUser.imageUrl),
-                    contentDescription = "Profile picture",
-                    modifier = Modifier
-                        .size(35.dp)
-                        .clip(CircleShape),
-                    contentScale = ContentScale.Crop
-                )
-            }
+            Column(
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally,
+                modifier = Modifier.padding(top = 60.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+                ) {
+
+                    if (chatUser.imageUrl.isNullOrEmpty()) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.ic_user),
+                            contentDescription = "Profile picture",
+                            modifier = Modifier.size(60.dp),
+                            tint = Color.White
+                        )
+                    } else {
+                        Image(
+                            painter = rememberAsyncImagePainter(model = chatUser.imageUrl),
+                            contentDescription = "Profile picture",
+                            modifier = Modifier
+                                .size(60.dp)
+                                .clip(CircleShape)
+                                .border(
+                                    width = 3.dp,
+                                    color = Color(0xFFBB1660),
+                                    shape = CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
 
             Spacer(modifier = Modifier.width(10.dp))
 
-            Row(
-                horizontalArrangement = Arrangement.SpaceBetween,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(
-                    chatUser.name ?: "Unknown",
-                    style = TextStyle(
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold
+                    Text(
+                        chatUser.name ?: "Unknown",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        )
                     )
-                )
-
-                Icon(
-                    imageVector = Icons.Default.MoreVert,
-                    contentDescription = "MoreVert",
-                    tint = Color.White,
-                    modifier = Modifier.size(24.dp)
-                )
+                }
             }
+
+            Icon(
+                imageVector = Icons.Default.MoreVert,
+                contentDescription = "MoreVert",
+                tint = Color(0xFFFF6EAF),
+                modifier = Modifier.size(24.dp)
+            )
+
         }
 
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
+                .background(Color(0xFFFF6EAF))
                 .clip(
                     RoundedCornerShape(
-                        topStart = 30.dp,
-                        topEnd = 30.dp
+                        topStart = 40.dp,
+                        topEnd = 40.dp
                     )
                 )
         ) {
-            LazyColumn {
-                items(vm.chatMessages.value){msg->
-                    val alignment = if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
-                    val color = if (msg.senderId == vm.userData.value?.userId) Color(0xFFE0E0E0) else Color(0xFF7B90FF)
-                    Column (
+            LazyColumn(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.White)
+            ) {
+                items(vm.chatMessages.value) { msg ->
+                    val alignment =
+                        if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
+                    val color =
+                        if (msg.senderId == vm.userData.value?.userId) Color(0xFFFF6EAF) else Color.LightGray
+                    Column(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
-                    ){
+                            .padding(20.dp)
+                    ) {
                         Text(
                             msg.message ?: "",
                             modifier = Modifier
-                                .clip(RoundedCornerShape(8.dp))
+                                .clip(RoundedCornerShape(69))
                                 .background(color)
                                 .align(alignment)
-                                .padding(8.dp)
+                                .padding(8.dp),
+                            fontSize = 18.sp
                         )
                     }
 
                 }
             }
-            Column (
+            Column(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-            ){
+            ) {
                 val suggestionList = vm.smartSugestion.observeAsState()
-                Row(horizontalArrangement = Arrangement.End, modifier = Modifier
-                    .padding(start = 4.dp, end = 4.dp)
-                    .fillMaxWidth()
+                Row(
+                    horizontalArrangement = Arrangement.End, modifier = Modifier
+                        .padding(start = 4.dp, end = 4.dp)
+                        .fillMaxWidth()
                 ) {
                     if (suggestionList.value?.isNotEmpty() == true) {
                         suggestionList.value!!.forEach { item ->
@@ -191,15 +215,22 @@ fun ChatScreen(
                                 modifier = Modifier
                                     .padding(horizontal = 4.dp)
                                     .clip(RoundedCornerShape(16.dp))
-                                    .clickable{
+                                    .clickable {
                                         message.value = item.text
                                     }
                             ) {
-                                Row(modifier = Modifier
-                                    .padding(start = 4.dp, end = 4.dp)
-                                ){
-                                    Text(text = item.text, color = Color.Black, modifier = Modifier.padding(start = 10.dp,
-                                        end = 8.dp, top = 8.dp, bottom = 8.dp))
+                                Row(
+                                    modifier = Modifier
+                                        .padding(start = 4.dp, end = 4.dp)
+                                ) {
+                                    Text(
+                                        text = item.text,
+                                        color = Color.Black,
+                                        modifier = Modifier.padding(
+                                            start = 10.dp,
+                                            end = 8.dp, top = 8.dp, bottom = 8.dp
+                                        )
+                                    )
                                 }
                             }
 
