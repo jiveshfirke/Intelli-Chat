@@ -17,10 +17,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
@@ -53,9 +53,7 @@ import com.dedsec.intellichat.components.viewModel
 
 @Composable
 fun ChatScreen(
-    navHostController: NavHostController,
-    vm: viewModel,
-    chatId: String
+    navHostController: NavHostController, vm: viewModel, chatId: String
 
 ) {
     val message = remember { mutableStateOf("") }
@@ -64,6 +62,7 @@ fun ChatScreen(
     val chatUser =
         if (vm.userData.value?.userId == currentChat.user1.userId) currentChat.user2 else currentChat.user1
 
+    val scrollState = rememberScrollState()
 
     LaunchedEffect(key1 = Unit) {
         vm.populateMessages(chatId)
@@ -88,8 +87,7 @@ fun ChatScreen(
                 .padding(top = 0.dp, start = 0.dp, end = 0.dp, bottom = 20.dp)
                 .fillMaxWidth()
         ) {
-            Icon(
-                painter = painterResource(id = R.drawable.baseline_arrow_back_24),
+            Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
                 contentDescription = "Add",
                 tint = Color.White,
                 modifier = Modifier
@@ -98,8 +96,7 @@ fun ChatScreen(
                     .clickable {
                         navHostController.popBackStack()
                         vm.depopulateMessages()
-                    }
-            )
+                    })
 
 //            Spacer(modifier = Modifier.width(5.dp))
 
@@ -128,9 +125,7 @@ fun ChatScreen(
                                 .size(60.dp)
                                 .clip(CircleShape)
                                 .border(
-                                    width = 3.dp,
-                                    color = Color(0xFFBB1660),
-                                    shape = CircleShape
+                                    width = 3.dp, color = Color(0xFFBB1660), shape = CircleShape
                                 ),
                             contentScale = ContentScale.Crop
                         )
@@ -139,11 +134,8 @@ fun ChatScreen(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        chatUser.name ?: "Unknown",
-                        style = TextStyle(
-                            color = Color.White,
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold
+                        chatUser.name ?: "Unknown", style = TextStyle(
+                            color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold
                         )
                     )
                 }
@@ -160,13 +152,14 @@ fun ChatScreen(
 
         }
 
-        LazyColumn(
+        Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
                 .weight(1f)
+                .verticalScroll(scrollState)
         ) {
-            items(vm.chatMessages.value) { msg ->
+            vm.chatMessages.value.forEach { msg ->
                 val alignment =
                     if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
                 val color =
@@ -196,7 +189,8 @@ fun ChatScreen(
         ) {
             val suggestionList = vm.smartSugestion.observeAsState()
             Row(
-                horizontalArrangement = Arrangement.End, modifier = Modifier
+                horizontalArrangement = Arrangement.End,
+                modifier = Modifier
                     .padding(start = 4.dp, end = 4.dp)
                     .fillMaxWidth()
             ) {
