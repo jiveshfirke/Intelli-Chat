@@ -68,6 +68,7 @@ import com.dedsec.intellichat.navigation.Chat
 import com.dedsec.intellichat.navigation.Profile
 import com.dedsec.intellichat.navigation.Single_Status
 import com.dedsec.intellichat.navigation.Start
+import com.dedsec.intellichat.navigation.About_Us
 import com.dedsec.intellichat.ui.theme.RedDark
 import com.dedsec.intellichat.ui.theme.RedLight
 import com.dedsec.intellichat.ui.theme.RedNormal
@@ -254,6 +255,19 @@ fun HomeScreen(
                     },
                     onClick = {
                         navHostController.navigate(Profile)
+                    }
+                )
+                DropdownMenuItem(
+                    text = {
+                        Text(
+                            text = "About us",
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.W400,
+                            letterSpacing = 1.sp
+                        )
+                    },
+                    onClick = {
+                        navHostController.navigate(About_Us)
                     }
                 )
                 DropdownMenuItem(
