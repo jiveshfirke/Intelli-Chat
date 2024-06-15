@@ -107,12 +107,12 @@ fun LoginScreen(
                 .verticalScroll(scrollState),
         ) {
 
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(5.dp))
             LoginText()
 
             Column (
                 modifier = Modifier
-                    .padding(43.dp)
+                    .padding(20.dp)
                     .padding(top = 80.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ){
@@ -134,7 +134,6 @@ fun LoginScreen(
                             fontSize = 20.sp
                         )
                     },
-                    maxLines = 1,
                     leadingIcon = {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_email_foreground),
@@ -285,15 +284,15 @@ fun LoginScreen(
 
 @Composable
 private fun LoginText() {
-    Column {
+    Column(
+        Modifier.padding(start = 10.dp, top = 90.dp)
+    ) {
         Text(
             text = "Welcome",
-            fontSize = 55.sp,
+            fontSize = 50.sp,
             color = Color(0xFF171624),
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp,
-            modifier = Modifier
-                .padding(top = 100.dp, start = 15.dp)
         )
         Text(
             text = "Back",
@@ -301,8 +300,6 @@ private fun LoginText() {
             color = Color(0xFF171624),
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp,
-            modifier = Modifier
-                .padding(top = 0.dp, start = 15.dp)
         )
         Text(
             text = "Hey! Good to see you again",
@@ -310,8 +307,6 @@ private fun LoginText() {
             color = Color(0xFF171624),
             fontWeight = FontWeight.Normal,
             fontFamily = loginFont,
-            modifier = Modifier
-                .padding(top = 0.dp, start = 15.dp)
         )
     }
 }

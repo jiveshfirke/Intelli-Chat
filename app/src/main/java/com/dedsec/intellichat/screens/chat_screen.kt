@@ -84,7 +84,7 @@ fun ChatScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(RedDark2)
+            .background(RedNormal)
             .safeDrawingPadding()
     ) {
         Row(
@@ -99,7 +99,7 @@ fun ChatScreen(
                 tint = Color.White,
                 modifier = Modifier
                     .padding(start = 20.dp)
-                    .size(32.dp)
+                    .size(28.dp)
                     .clickable {
                         navHostController.popBackStack()
                         vm.depopulateMessages()
@@ -127,7 +127,7 @@ fun ChatScreen(
                     } else {
                         Card(
                             shape = CircleShape,
-                            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                            elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
                         ) {
                             Image(
                                 painter = rememberAsyncImagePainter(model = chatUser.imageUrl),
@@ -143,8 +143,11 @@ fun ChatScreen(
                     Spacer(modifier = Modifier.width(10.dp))
 
                     Text(
-                        chatUser.name ?: "Unknown", style = TextStyle(
-                            color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold
+                        chatUser.name ?: "Unknown",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
                         )
                     )
                 }
@@ -153,7 +156,7 @@ fun ChatScreen(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "MoreVert",
-                tint = Color.White,
+                tint = RedNormal,
                 modifier = Modifier
                     .padding(end = 20.dp)
                     .size(24.dp)
@@ -166,27 +169,30 @@ fun ChatScreen(
                 .weight(1f)
                 .verticalScroll(scrollState)
                 .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                .background(Color.White)
+                .background(RedLight)
 
         ) {
             vm.chatMessages.value.forEach { msg ->
                 val alignment =
                     if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
                 val color =
-                    if (msg.senderId == vm.userData.value?.userId) RedNormal else Color.LightGray
+                    if (msg.senderId == vm.userData.value?.userId) RedNormal else Color.White
+                val textColor =
+                    if(msg.senderId == vm.userData.value?.userId) Color.White else Color.Black
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(12.dp)
+                        .padding(10.dp)
                 ) {
                     Text(
                         msg.message ?: "",
                         modifier = Modifier
-                            .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp, bottomStart = 30.dp, bottomEnd = 0.dp))
+                            .clip(RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp, bottomStart = 25.dp, bottomEnd = 0.dp))
                             .background(color)
                             .align(alignment)
-                            .padding(12.dp),
-                        fontSize = 18.sp
+                            .padding(10.dp),
+                        fontSize = 18.sp,
+                        color = textColor
                     )
                 }
 
@@ -194,7 +200,7 @@ fun ChatScreen(
         }
         Column(
             modifier = Modifier
-                .background(Color.White)
+                .background(RedLight)
                 .padding(10.dp)
         ) {
             val suggestionList = vm.smartSugestion.observeAsState()

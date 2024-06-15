@@ -41,6 +41,7 @@ import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.CheckSignedIn
 import com.dedsec.intellichat.components.viewModel
 import com.dedsec.intellichat.navigation.Login
+import com.dedsec.intellichat.ui.theme.RedNormal
 import com.dedsec.intellichat.ui.theme.RedNormal2
 import com.dedsec.intellichat.ui.theme.appNameFont
 import com.dedsec.intellichat.ui.theme.loginFont
@@ -81,7 +82,7 @@ fun StartScreen(
                     .padding(top = 200.dp)
             )
 
-            Spacer(modifier = Modifier.paddingFromBaseline(top = 325.dp))
+            Spacer(modifier = Modifier.padding(top = 270.dp))
             
             Text(
                 text = "It's easy to chat intelligently",
@@ -119,7 +120,7 @@ fun StartScreen(
                     )
                 }
 
-                Spacer(modifier = Modifier.width(20.dp))
+                Spacer(modifier = Modifier.width(10.dp))
 
                 Text(
                     "Secure, private messaging",
@@ -144,7 +145,7 @@ fun StartScreen(
                 .size(70.dp),
             colors = ButtonDefaults.buttonColors(
                 contentColor = Color.White,
-                containerColor = RedNormal2,
+                containerColor = RedNormal,
             ),
             elevation = ButtonDefaults.elevatedButtonElevation(10.dp)
         ) {

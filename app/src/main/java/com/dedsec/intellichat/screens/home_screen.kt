@@ -29,9 +29,11 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
@@ -86,7 +88,7 @@ fun HomeScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color.White)
+            .background(Color.Transparent)
             .safeDrawingPadding()
             .padding(top = 15.dp)
     ) {
@@ -94,6 +96,7 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
         ) {
+
             Header(vm.userData.value?.name)
 
             Card(
@@ -103,7 +106,7 @@ fun HomeScreen(
             ) {
                 LazyRow(
                     modifier = Modifier
-                        .background(RedNormal2)
+                        .background(RedNormal)
                         .fillMaxWidth()
                 ) {
                     item {
@@ -115,7 +118,6 @@ fun HomeScreen(
                             }
                         }
                         AddStoryLayout(onClick = { launcher.launch("image/*") })
-                        Spacer(modifier = Modifier.width(10.dp))
                     }
                     val statusList = vm.statusList.value
                     val userData = vm.userData.value
@@ -155,7 +157,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .padding(top = 0.dp)
-                    .background(RedNormal2)
+                    .background(RedNormal)
                     .fillMaxSize()
                     .clip(
                         RoundedCornerShape(
@@ -163,7 +165,7 @@ fun HomeScreen(
                             topEnd = 60.dp
                         )
                     )
-                    .background(Color.White),
+                    .background(RedLight),
                 contentAlignment = Alignment.TopCenter
             ) {
                 Column(
@@ -360,14 +362,18 @@ fun AddChatRow(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
             .height(70.dp)
-            .padding(top = 10.dp)
+            .padding(top = 12.dp)
     ) {
 
         OutlinedButton(
             onClick = { showDialog.value = true },
             modifier = Modifier,
-            border = BorderStroke(width = 1.5.dp, color = RedDark),
-            shape = RoundedCornerShape(30.dp)
+            border = BorderStroke(width = 2.dp, color = RedDark),
+            shape = RoundedCornerShape(30.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color.White,
+                contentColor = Color.Black
+            )
         ) {
             Text(
                 text = "Add Chat",
@@ -393,25 +399,24 @@ fun AddChatRow(
             }
         )
     }
+    HorizontalDivider(
+        thickness = 0.8.dp,
+        color = Color.LightGray,
+        modifier = Modifier
+            .fillMaxWidth(1f)
+            .padding(start = 30.dp, end = 30.dp, bottom = 10.dp, top = 10.dp)
+    )
 }
 
 @Composable
 fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
-    OutlinedCard(
-//        horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .padding(horizontal = 25.dp, vertical = 5.dp)
-            .clickable { onClick() }
-            .background(Color.White),
-        shape = RoundedCornerShape(60),
-        border = BorderStroke(width = 2.dp, color = RedDark)
-    ) {
         Row(
-            Modifier
+            modifier = Modifier
                 .height(70.dp)
-                .padding(horizontal = 10.dp, vertical = 10.dp)
+                .padding(start = 24.dp)
                 .fillMaxWidth()
-                .background(Color.White),
+                .background(Color.Transparent)
+                .clickable { onClick() },
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
@@ -420,7 +425,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     painter = painterResource(id = R.drawable.ic_user),
                     contentDescription = "Person Profile",
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(45.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
@@ -429,31 +434,33 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     painter = rememberAsyncImagePainter(model = chatuser.imageUrl),
                     contentDescription = "Person Profile",
                     modifier = Modifier
-                        .size(50.dp)
+                        .size(45.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
             }
             Spacer(
-                modifier = Modifier.width(12.dp)
+                modifier = Modifier.width(10.dp)
             )
             Text(
                 chatuser.name ?: "",
                 style = TextStyle(
-                    fontSize = 22.sp,
+                    fontSize = 18.sp,
                     color = Color.Black,
-                    fontWeight = FontWeight.W700,
-                    fontFamily = FontFamily(Font(R.font.nunito_regular)),
+                    fontWeight = FontWeight.W800,
+                    fontFamily = FontFamily(Font(R.font.montserrat_bold)),
                     letterSpacing = 0.6.sp
                 )
             )
         }
-//        HorizontalDivider(
-//            thickness = 0.8.dp,
-//            color = Color.LightGray,
-//            modifier = Modifier.fillMaxWidth(0.84f)
-//        )
-    }
+        HorizontalDivider(
+            thickness = 0.8.dp,
+            color = Color.LightGray,
+            modifier = Modifier
+                .fillMaxWidth(1f)
+                .padding(start = 30.dp, end = 30.dp, top = 10.dp)
+        )
+
 }
 
 @Composable
@@ -489,18 +496,8 @@ fun Header(name: String?) {
 fun AddStoryLayout(onClick: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Center,
-        modifier = Modifier
-            .padding(start = 32.dp, top = 16.dp, bottom = 16.dp)
+        modifier = Modifier.padding(start = 16.dp, top = 30.dp, bottom = 16.dp)
     ) {
-        Text(
-            text = "View Status",
-            style = TextStyle(
-                color = Color.White,
-                fontSize = 16.sp
-            ),
-            modifier = Modifier
-        )
-        Spacer(modifier = Modifier.height(8.dp))
         Box(
             modifier = Modifier
 //                .border(width = 3.dp, color = Color.Black, shape = CircleShape)
@@ -516,18 +513,19 @@ fun AddStoryLayout(onClick: () -> Unit) {
                 contentDescription = "Add",
                 tint = Color.Black,
                 modifier = Modifier
-                    .size(40.dp)
+                    .size(45.dp)
             )
         }
-        Spacer(modifier = Modifier.height(8.dp))
+        
+        Spacer(modifier = Modifier.height(12.dp))
+        
         Text(
-            "Your Status",
+            text = "Add Status",
             style = TextStyle(
                 color = Color.White,
-                fontSize = 16.sp
+                fontSize = 14.sp
             ),
             modifier = Modifier
-                .align(Alignment.CenterHorizontally)
         )
     }
 }
@@ -537,7 +535,7 @@ fun UserStoryLayout(name: String?, imageUrl: String?, onClick: () -> Unit) {
     Column(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
-            .padding(start = 16.dp, top = 41.dp, bottom = 16.dp)
+            .padding(start = 16.dp, top = 30.dp, bottom = 16.dp)
     ) {
         Box(
             modifier = Modifier
@@ -568,12 +566,12 @@ fun UserStoryLayout(name: String?, imageUrl: String?, onClick: () -> Unit) {
                 )
             }
         }
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         Text(
             name ?: "",
             style = TextStyle(
                 color = Color.White,
-                fontSize = 16.sp
+                fontSize = 14.sp
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
