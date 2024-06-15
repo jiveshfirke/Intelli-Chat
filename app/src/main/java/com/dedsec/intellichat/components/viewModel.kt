@@ -13,6 +13,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.Filter
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.toObject
 import com.google.firebase.storage.FirebaseStorage
 import com.google.mlkit.nl.smartreply.SmartReply
 import com.google.mlkit.nl.smartreply.SmartReplySuggestion
@@ -23,6 +24,7 @@ import java.util.Calendar
 import java.util.Locale
 import java.util.UUID
 import javax.inject.Inject
+import kotlin.math.log
 
 @HiltViewModel
 class viewModel @Inject constructor(
@@ -219,8 +221,8 @@ class viewModel @Inject constructor(
             )
             db.collection("Chats").where(
                 Filter.or(
-                    Filter.equalTo("user1.number", userData.value?.userId),
-                    Filter.equalTo("user2.number", userData.value?.userId)
+                    Filter.equalTo("user1.userId", userData.value?.userId),
+                    Filter.equalTo("user2.userId", userData.value?.userId)
                 )
             ).get().addOnSuccessListener {value ->
                 chats.value.forEach {
@@ -230,6 +232,23 @@ class viewModel @Inject constructor(
                         "user2.imageUrl"
                     }
                     db.collection("Chats").document(it.chatId?: "").update(currentUser, imageUrl.toString())
+                }
+            }
+
+            db.collection("Status").where(
+                    Filter.equalTo("user.userId", userData.value?.userId)
+            ).get().addOnSuccessListener { values->
+                for (value in values){
+                    val updatedData = hashMapOf<String, Any>(
+                        "user.imageUrl" to imageUrl.toString()
+                    )
+                    value.reference.update(updatedData)
+                        .addOnSuccessListener {
+                            Log.i("viewModel", "Status image updated")
+                        }
+                        .addOnFailureListener { e->
+                            Log.i("viewModel", "Status image failed $e")
+                        }
                 }
             }
         }
