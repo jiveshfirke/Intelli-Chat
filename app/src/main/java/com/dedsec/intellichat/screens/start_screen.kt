@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.paddingFromBaseline
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
@@ -35,6 +36,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
@@ -88,7 +90,11 @@ fun StartScreen(
                 fontWeight = FontWeight.W800,
                 fontStyle = FontStyle.Normal,
                 fontFamily = FontFamily(Font(R.font.dmserif_text_regular)),
-                letterSpacing = 1.sp
+                letterSpacing = 1.sp,
+                modifier = Modifier
+                    .padding(5.dp)
+                    .background(Color.Yellow),
+                textAlign = TextAlign.Center
             )
 
             Spacer(modifier = Modifier.paddingFromBaseline(20.dp))

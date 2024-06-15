@@ -312,7 +312,7 @@ fun addChatFunction(
                     },
                     modifier = Modifier,
                     shape = RoundedCornerShape(30.dp),
-                    border = BorderStroke(1.5.dp, Color(0xFFFF6EAF)),
+                    border = BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary),
                 ) {
                     Text(
                         text = "Add",
