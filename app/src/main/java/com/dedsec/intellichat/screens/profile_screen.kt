@@ -1,5 +1,6 @@
 package com.dedsec.intellichat.screens
 
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
@@ -233,8 +234,10 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
                         .wrapContentSize()
                         .clickable {}
                         .size(150.dp)
+                        .background(Color.White)
                         .padding(bottom = 4.dp),
-                    contentScale = ContentScale.Crop)
+                    contentScale = ContentScale.Crop
+                )
             } else {
                 Image(painter = rememberAsyncImagePainter(model = imageUrl),
                     contentDescription = null,
@@ -251,10 +254,11 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
             modifier = Modifier
                 .padding(top = 8.dp)
                 .border(2.dp, RedDark, RoundedCornerShape(50))
-                .padding(5.dp)
+                .padding(10.dp)
                 .clickable {
                     launcher.launch("image/*")
-                }
+                },
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
                 text = "Change",
