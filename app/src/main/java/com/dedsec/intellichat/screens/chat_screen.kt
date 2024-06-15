@@ -50,6 +50,8 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.viewModel
+import com.dedsec.intellichat.ui.theme.RedDark
+import com.dedsec.intellichat.ui.theme.RedNormal
 
 @Composable
 fun ChatScreen(
@@ -76,7 +78,7 @@ fun ChatScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFFF6EAF))
+            .background(RedNormal)
             .safeDrawingPadding()
     ) {
         Row(
@@ -158,12 +160,13 @@ fun ChatScreen(
                 .background(Color.White)
                 .weight(1f)
                 .verticalScroll(scrollState)
+                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
         ) {
             vm.chatMessages.value.forEach { msg ->
                 val alignment =
                     if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
                 val color =
-                    if (msg.senderId == vm.userData.value?.userId) Color(0xFFFF6EAF) else Color.LightGray
+                    if (msg.senderId == vm.userData.value?.userId) RedNormal else Color.LightGray
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()

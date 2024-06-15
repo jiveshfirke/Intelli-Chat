@@ -3,10 +3,13 @@ package com.dedsec.intellichat.screens
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -20,11 +23,16 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -34,11 +42,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -48,7 +60,10 @@ import coil.compose.rememberAsyncImagePainter
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.ProgressionBar
 import com.dedsec.intellichat.components.viewModel
+import com.dedsec.intellichat.ui.theme.RedDark
+import com.dedsec.intellichat.ui.theme.RedLight
 import com.dedsec.intellichat.ui.theme.appNameFont
+import com.dedsec.intellichat.ui.theme.loginFont
 import com.dedsec.intellichat.ui.theme.welcomeFont
 
 @Composable
@@ -73,21 +88,32 @@ fun ProfileScreen(navHostController: NavHostController, vm: viewModel) {
     if (vm.inProgress.value) {
         ProgressionBar()
     } else {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(color = Color(0xFF092635))
-                .verticalScroll(rememberScrollState())
-                .safeDrawingPadding()
-        ) {
-            TopSectionOfProfile(navHostController = navHostController, status = status, vm = vm, name = name, number = number)
-            Spacer(modifier = Modifier.height(60.dp))
-            ProfileImage(imageUrl = imageurl, vm = vm)
-            Spacer(modifier = Modifier.height(60.dp))
-            UserName(name = name)
-            Spacer(modifier = Modifier.height(30.dp))
-            UserContact(phonenumber = number)
-
+        Box {
+            Image(
+                painter = painterResource(id = R.drawable.profile_screen_bg),
+                contentDescription = null,
+                modifier = Modifier.fillMaxSize(),
+                contentScale = ContentScale.Crop
+            )
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
+                    .safeDrawingPadding()
+            ) {
+                TopSectionOfProfile(
+                    navHostController = navHostController,
+                    status = status,
+                    vm = vm,
+                    name = name,
+                    number = number
+                )
+                Spacer(modifier = Modifier.height(30.dp))
+                ProfileImage(imageUrl = imageurl, vm = vm)
+                Spacer(modifier = Modifier.height(60.dp))
+                UserName(name = name)
+                UserContact(phonenumber = number)
+            }
         }
     }
 
@@ -97,23 +123,25 @@ fun ProfileScreen(navHostController: NavHostController, vm: viewModel) {
 fun UserContact(phonenumber: MutableState<String>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .padding(15.dp)
             .fillMaxWidth()
     ) {
         Text(
-            text = "Phone",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.W800,
-            fontFamily = welcomeFont,
-            color = Color.White
+            text = "Phone :",
+            fontSize = 24.sp,
+            fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+            color = Color.Black,
+            letterSpacing = (-1).sp
         )
-        Spacer(modifier = Modifier.width(10.dp))
         Card(
-            elevation = CardDefaults.cardElevation(10.dp), colors = CardDefaults.cardColors(
-                contentColor = Color.Black, containerColor = Color.White
-            )
+            colors = CardDefaults.cardColors(
+                contentColor = Color.Black,
+                containerColor = Color.Transparent
+            ),
+            border = BorderStroke(2.5.dp, RedDark),
+            shape = RoundedCornerShape(30)
         ) {
             TextField(
                 value = phonenumber.value,
@@ -122,6 +150,11 @@ fun UserContact(phonenumber: MutableState<String>) {
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                 ),
+                textStyle = TextStyle(
+                    fontFamily = FontFamily(Font(R.font.roboto_medium)),
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.Normal,
+                )
             )
         }
     }
@@ -131,23 +164,24 @@ fun UserContact(phonenumber: MutableState<String>) {
 fun UserName(name: MutableState<String>) {
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween,
+        horizontalArrangement = Arrangement.SpaceAround,
         modifier = Modifier
             .padding(15.dp)
             .fillMaxWidth()
     ) {
         Text(
-            text = "Name",
-            fontSize = 30.sp,
-            fontWeight = FontWeight.W800,
-            fontFamily = welcomeFont,
-            color = Color.White
-        )
-        Spacer(modifier = Modifier.width(10.dp))
-        Card(
-            elevation = CardDefaults.cardElevation(10.dp), colors = CardDefaults.cardColors(
-                contentColor = Color.Black, containerColor = Color.White
+            text = "Name : ",
+            fontSize = 24.sp,
+            fontFamily = FontFamily(Font(R.font.montserrat_bold)),
+            color = Color.Black,
+            letterSpacing = (-1).sp
             )
+        Card(
+            colors = CardDefaults.cardColors(
+                contentColor = Color.Black, containerColor = Color.White
+            ),
+            border = BorderStroke(2.5.dp, RedDark),
+            shape = RoundedCornerShape(30)
         ) {
             TextField(
                 value = name.value,
@@ -156,6 +190,12 @@ fun UserName(name: MutableState<String>) {
                     focusedContainerColor = Color.Transparent,
                     unfocusedContainerColor = Color.Transparent,
                 ),
+                textStyle = TextStyle(
+                    fontFamily = FontFamily.Default,
+                    fontSize = 22.sp,
+                    fontWeight = FontWeight.W600,
+                    letterSpacing = .6.sp
+                )
             )
         }
     }
@@ -182,10 +222,11 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
                 .padding(0.dp)
                 .size(150.dp),
             colors = CardDefaults.cardColors(
-                contentColor = Color.White, containerColor = Color.White
-            )
+                contentColor = Color.Black, containerColor = Color.Black
+            ),
+            elevation = CardDefaults.cardElevation(10.dp)
         ) {
-            if (imageUrl.isNullOrEmpty()){
+            if (imageUrl.isNullOrEmpty()) {
                 Image(painter = painter,
                     contentDescription = null,
                     modifier = Modifier
@@ -193,9 +234,8 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
                         .clickable {}
                         .size(150.dp)
                         .padding(bottom = 4.dp),
-                    contentScale = ContentScale.Crop
-                )
-            }else {
+                    contentScale = ContentScale.Crop)
+            } else {
                 Image(painter = rememberAsyncImagePainter(model = imageUrl),
                     contentDescription = null,
                     modifier = Modifier
@@ -203,26 +243,32 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
                         .clickable {}
                         .size(150.dp)
                         .padding(bottom = 4.dp),
-                    contentScale = ContentScale.Crop
-                )
+                    contentScale = ContentScale.Crop)
             }
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Row(modifier = Modifier.clickable {
-            launcher.launch("image/*")
-        }) {
+        Row(
+            modifier = Modifier
+                .padding(top = 8.dp)
+                .border(2.dp, RedDark, RoundedCornerShape(50))
+                .padding(5.dp)
+                .clickable {
+                    launcher.launch("image/*")
+                }
+        ) {
             Text(
                 text = "Change",
                 fontSize = 20.sp,
-                color = Color.White,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = 1.sp,
+                color = Color.Black,
+                fontFamily = loginFont,
+                letterSpacing = (-.6).sp
             )
+            Spacer(modifier = Modifier.width(5.dp))
             Image(
-                painter = painterResource(id = R.drawable.ic_edit),
+                imageVector = Icons.Default.Edit,
                 contentDescription = "",
-                colorFilter = ColorFilter.tint(Color.White),
-                modifier = Modifier.size(22.dp)
+                colorFilter = ColorFilter.tint(Color.Black),
+                modifier = Modifier.size(20.dp)
             )
         }
 
@@ -230,36 +276,53 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
 }
 
 @Composable
-private fun TopSectionOfProfile(name: MutableState<String>, number: MutableState<String>, vm: viewModel, navHostController: NavHostController, status: MutableState<String>) {
+private fun TopSectionOfProfile(
+    name: MutableState<String>,
+    number: MutableState<String>,
+    vm: viewModel,
+    navHostController: NavHostController,
+    status: MutableState<String>
+) {
     Row(
         horizontalArrangement = Arrangement.SpaceBetween, modifier = Modifier.fillMaxWidth()
     ) {
-        Button(
+        OutlinedButton(
             onClick = {
                 status.value = "Cancelled"
                 navHostController.popBackStack()
-                      },
+            },
             elevation = ButtonDefaults.buttonElevation(0.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent, contentColor = Color.White
+                containerColor = Color.Transparent, contentColor = Color.White,
             ),
+            shape = RoundedCornerShape(50),
+            border = BorderStroke(2.dp, Color.White),
+            modifier = Modifier.padding(10.dp)
         ) {
             Text(
-                text = "Cancel", fontFamily = appNameFont, letterSpacing = 1.sp, fontSize = 30.sp
+                text = "Cancel",
+                fontFamily = loginFont,
+                fontSize = 18.sp,
+                letterSpacing = (-0.6).sp
             )
         }
         Button(
             onClick = {
                 status.value = "Saved"
                 vm.createOrUpdateProfile(name = name.value, phonenumber = number.value)
-                      },
+            },
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color.Transparent,
-                contentColor = Color.White
-            )
+                containerColor = Color.Transparent, contentColor = Color.White
+            ),
+            shape = RoundedCornerShape(50),
+            border = BorderStroke(2.dp, Color.White),
+            modifier = Modifier.padding(10.dp)
         ) {
             Text(
-                text = "Save", fontFamily = appNameFont, letterSpacing = 1.sp, fontSize = 30.sp
+                text = "Save",
+                fontFamily = loginFont,
+                fontSize = 18.sp,
+                letterSpacing = (-0.6).sp
             )
         }
     }

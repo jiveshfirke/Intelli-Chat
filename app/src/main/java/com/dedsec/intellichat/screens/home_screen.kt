@@ -68,6 +68,10 @@ import com.dedsec.intellichat.navigation.Chat
 import com.dedsec.intellichat.navigation.Profile
 import com.dedsec.intellichat.navigation.Single_Status
 import com.dedsec.intellichat.navigation.Start
+import com.dedsec.intellichat.ui.theme.RedDark
+import com.dedsec.intellichat.ui.theme.RedLight
+import com.dedsec.intellichat.ui.theme.RedNormal
+import com.dedsec.intellichat.ui.theme.RedNormal2
 
 @Composable
 fun HomeScreen(
@@ -98,7 +102,7 @@ fun HomeScreen(
             ) {
                 LazyRow(
                     modifier = Modifier
-                        .background(Color(0xFFFF6EAF))
+                        .background(RedNormal2)
                         .fillMaxWidth()
                 ) {
                     item {
@@ -150,7 +154,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .padding(top = 0.dp)
-                    .background(Color(0xFFFF6EAF))
+                    .background(RedNormal2)
                     .fillMaxSize()
                     .clip(
                         RoundedCornerShape(
@@ -348,7 +352,7 @@ fun AddChatRow(
         OutlinedButton(
             onClick = { showDialog.value = true },
             modifier = Modifier,
-            border = BorderStroke(1.5.dp, Color(0xFFFF6EAF)),
+            border = BorderStroke(width = 1.5.dp, color = RedDark),
             shape = RoundedCornerShape(30.dp)
         ) {
             Text(
@@ -386,7 +390,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
             .clickable { onClick() }
             .background(Color.White),
         shape = RoundedCornerShape(60),
-        border = BorderStroke(width = 2.dp, color = Color(0xFFFF6EAF))
+        border = BorderStroke(width = 2.dp, color = RedDark)
     ) {
         Row(
             Modifier
