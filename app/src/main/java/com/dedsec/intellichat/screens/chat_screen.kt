@@ -220,7 +220,7 @@ fun ChatScreen(
                         Surface(
                             color = Color.Transparent,
                             shape = RoundedCornerShape(16.dp),
-                            border = BorderStroke(width = 1.dp, color = Color.LightGray),
+                            border = BorderStroke(width = 1.dp, color = Color.Gray),
                             modifier = Modifier
                                 .padding(horizontal = 4.dp)
                                 .clip(RoundedCornerShape(16.dp))
@@ -265,13 +265,20 @@ fun ChatScreen(
                 placeholder = {
                     Text(
                         text = "Message here",
-                        color = Color.Gray,
+                        color = Color.DarkGray,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Bold,
                         fontFamily = loginFont,
                         letterSpacing = 1.sp
                     )
                 },
+                textStyle = TextStyle(
+                    color = Color.Black,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = loginFont,
+                    letterSpacing = 1.sp
+                ),
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Add,
