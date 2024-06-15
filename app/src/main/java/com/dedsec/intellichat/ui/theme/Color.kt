@@ -15,3 +15,5 @@ val RedDark2 = Color(0xFFF11E1E)
 val RedNormal = Color(0xFFF34F4F)
 val RedNormal2 = Color(0xFFFF4545)
 val RedLight = Color(0xFFFF7373)
+
+val chatBackgroundColor = Color(0xFF5D0E41)

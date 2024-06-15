@@ -25,6 +25,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Send
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -51,7 +53,11 @@ import coil.compose.rememberAsyncImagePainter
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.viewModel
 import com.dedsec.intellichat.ui.theme.RedDark
+import com.dedsec.intellichat.ui.theme.RedDark2
+import com.dedsec.intellichat.ui.theme.RedLight
 import com.dedsec.intellichat.ui.theme.RedNormal
+import com.dedsec.intellichat.ui.theme.chatBackgroundColor
+import com.dedsec.intellichat.ui.theme.loginFont
 
 @Composable
 fun ChatScreen(
@@ -78,19 +84,18 @@ fun ChatScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(RedNormal)
+            .background(RedDark2)
             .safeDrawingPadding()
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
-//                .padding(start = 20.dp, end = 20.dp, top = 5.dp, bottom = 20.dp)
                 .padding(top = 0.dp, start = 0.dp, end = 0.dp, bottom = 20.dp)
                 .fillMaxWidth()
         ) {
             Icon(painter = painterResource(id = R.drawable.baseline_arrow_back_24),
-                contentDescription = "Add",
+                contentDescription = "Back",
                 tint = Color.White,
                 modifier = Modifier
                     .padding(start = 20.dp)
@@ -120,17 +125,19 @@ fun ChatScreen(
                             tint = Color.White
                         )
                     } else {
-                        Image(
-                            painter = rememberAsyncImagePainter(model = chatUser.imageUrl),
-                            contentDescription = "Profile picture",
-                            modifier = Modifier
-                                .size(60.dp)
-                                .clip(CircleShape)
-                                .border(
-                                    width = 3.dp, color = Color(0xFFBB1660), shape = CircleShape
-                                ),
-                            contentScale = ContentScale.Crop
-                        )
+                        Card(
+                            shape = CircleShape,
+                            elevation = CardDefaults.cardElevation(defaultElevation = 10.dp),
+                        ) {
+                            Image(
+                                painter = rememberAsyncImagePainter(model = chatUser.imageUrl),
+                                contentDescription = "Profile picture",
+                                modifier = Modifier
+                                    .size(60.dp)
+                                    .clip(CircleShape),
+                                contentScale = ContentScale.Crop,
+                            )
+                        }
                     }
 
                     Spacer(modifier = Modifier.width(10.dp))
@@ -151,16 +158,16 @@ fun ChatScreen(
                     .padding(end = 20.dp)
                     .size(24.dp)
             )
-
         }
 
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.White)
                 .weight(1f)
                 .verticalScroll(scrollState)
-                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
+                .background(Color.White)
+
         ) {
             vm.chatMessages.value.forEach { msg ->
                 val alignment =
@@ -170,15 +177,15 @@ fun ChatScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(8.dp)
+                        .padding(12.dp)
                 ) {
                     Text(
                         msg.message ?: "",
                         modifier = Modifier
-                            .clip(RoundedCornerShape(69))
+                            .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp, bottomStart = 30.dp, bottomEnd = 0.dp))
                             .background(color)
                             .align(alignment)
-                            .padding(8.dp),
+                            .padding(12.dp),
                         fontSize = 18.sp
                     )
                 }
@@ -236,7 +243,7 @@ fun ChatScreen(
                     message.value = it
                 },
                 modifier = Modifier
-                    .padding(top = 10.dp, start = 20.dp, end = 20.dp)
+                    .padding(top = 10.dp, start = 10.dp, end = 10.dp)
                     .fillMaxWidth(),
                 shape = RoundedCornerShape(100),
                 colors = TextFieldDefaults.colors(
@@ -245,15 +252,28 @@ fun ChatScreen(
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 placeholder = {
-                    Text(text = "Message here")
+                    Text(
+                        text = "Message here",
+                        color = Color.Gray,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        fontFamily = loginFont,
+                        letterSpacing = 1.sp
+                    )
                 },
                 leadingIcon = {
-                    Icon(imageVector = Icons.Default.Add, contentDescription = "Add")
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = "Add",
+                        tint = Color.DarkGray,
+                        modifier = Modifier.size(30.dp)
+                    )
                 },
                 trailingIcon = {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Send,
                         contentDescription = "send",
+                        tint = Color.DarkGray,
                         modifier = Modifier
                             .clickable {
                                 if (message.value.isEmpty()) {
