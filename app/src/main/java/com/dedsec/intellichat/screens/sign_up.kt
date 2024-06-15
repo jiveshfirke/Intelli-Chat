@@ -327,7 +327,7 @@ fun SignUpScreen(
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))
-                Spacer(modifier = Modifier.height(120.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 ElevatedButton(
                     modifier = Modifier
@@ -391,7 +391,7 @@ private fun SignUpText() {
     Column {
         Text(
             text = "Sign Up",
-            fontSize = 70.sp,
+            fontSize = 50.sp,
             color = Color(0xFF171624),
             fontWeight = FontWeight.ExtraBold,
             letterSpacing = 1.sp,
@@ -400,12 +400,12 @@ private fun SignUpText() {
         )
         Text(
             text = "Hello! let's join with us",
-            fontSize = 20.sp,
+            fontSize = 18.sp,
             color = Color(0xFF171624),
             fontWeight = FontWeight.Normal,
             fontFamily = loginFont,
             modifier = Modifier
-                .padding(top = 15.dp, start = 15.dp)
+                .padding(top = 15.dp, start = 15.dp, bottom = 20.dp)
         )
     }
 }

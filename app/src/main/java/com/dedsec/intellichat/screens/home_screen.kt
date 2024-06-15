@@ -248,7 +248,8 @@ fun HomeScreen(
                             text = "Profile",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.W400,
-                            letterSpacing = 1.sp
+                            letterSpacing = 1.sp,
+                            color = Color.Black
                         )
                     },
                     onClick = {
@@ -261,7 +262,8 @@ fun HomeScreen(
                             text = "About us",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.W400,
-                            letterSpacing = 1.sp
+                            letterSpacing = 1.sp,
+                            color = Color.Black
                         )
                     },
                     onClick = {
@@ -274,7 +276,8 @@ fun HomeScreen(
                             text = "Logout",
                             fontSize = 18.sp,
                             fontWeight = FontWeight.W400,
-                            letterSpacing = 1.sp
+                            letterSpacing = 1.sp,
+                            color = Color.Black
                         )
                     },
                     onClick = {

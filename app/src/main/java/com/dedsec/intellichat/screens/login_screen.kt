@@ -109,7 +109,7 @@ fun LoginScreen(
 
             Spacer(Modifier.height(5.dp))
             LoginText()
-
+            Spacer(Modifier.height(20.dp))
             Column (
                 modifier = Modifier
                     .padding(20.dp)
@@ -222,7 +222,7 @@ fun LoginScreen(
                 )
 
                 Spacer(modifier = Modifier.height(50.dp))
-                Spacer(modifier = Modifier.height(220.dp))
+                Spacer(modifier = Modifier.height(150.dp))
 
                 ElevatedButton(
                     modifier = Modifier
@@ -238,8 +238,6 @@ fun LoginScreen(
                         fontFamily = loginFont
                     )
                 }
-
-                Spacer(modifier = Modifier.height(20.dp))
 
                 val signUpText = buildAnnotatedString {
                     withStyle(
@@ -289,14 +287,14 @@ private fun LoginText() {
     ) {
         Text(
             text = "Welcome",
-            fontSize = 50.sp,
+            fontSize = 40.sp,
             color = Color(0xFF171624),
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp,
         )
         Text(
             text = "Back",
-            fontSize = 50.sp,
+            fontSize = 40.sp,
             color = Color(0xFF171624),
             fontWeight = FontWeight.Bold,
             letterSpacing = 1.sp,

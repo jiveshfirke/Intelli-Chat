@@ -260,6 +260,7 @@ fun ChatScreen(
                 colors = TextFieldDefaults.colors(
                     focusedIndicatorColor = Color.Transparent,
                     focusedContainerColor = Color.LightGray,
+                    unfocusedContainerColor = Color.LightGray,
                     unfocusedIndicatorColor = Color.Transparent
                 ),
                 placeholder = {
@@ -277,7 +278,7 @@ fun ChatScreen(
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     fontFamily = loginFont,
-                    letterSpacing = 1.sp
+                    letterSpacing = 1.sp,
                 ),
                 leadingIcon = {
                     Icon(
