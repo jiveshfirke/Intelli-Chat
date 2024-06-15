@@ -35,6 +35,7 @@ import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -71,11 +72,6 @@ import com.dedsec.intellichat.navigation.Profile
 import com.dedsec.intellichat.navigation.Single_Status
 import com.dedsec.intellichat.navigation.Start
 import com.dedsec.intellichat.navigation.About_Us
-import com.dedsec.intellichat.ui.theme.RedDark
-import com.dedsec.intellichat.ui.theme.RedLight
-import com.dedsec.intellichat.ui.theme.RedNormal
-import com.dedsec.intellichat.ui.theme.RedNormal2
-
 @Composable
 fun HomeScreen(
     navHostController: NavHostController,
@@ -106,7 +102,7 @@ fun HomeScreen(
             ) {
                 LazyRow(
                     modifier = Modifier
-                        .background(RedNormal)
+                        .background(MaterialTheme.colorScheme.secondary)
                         .fillMaxWidth()
                 ) {
                     item {
@@ -157,7 +153,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .padding(top = 0.dp)
-                    .background(RedNormal)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .fillMaxSize()
                     .clip(
                         RoundedCornerShape(
@@ -165,7 +161,7 @@ fun HomeScreen(
                             topEnd = 60.dp
                         )
                     )
-                    .background(RedLight),
+                    .background(color = MaterialTheme.colorScheme.tertiary),
                 contentAlignment = Alignment.TopCenter
             ) {
                 Column(
@@ -368,7 +364,7 @@ fun AddChatRow(
         OutlinedButton(
             onClick = { showDialog.value = true },
             modifier = Modifier,
-            border = BorderStroke(width = 2.dp, color = RedDark),
+            border = BorderStroke(width = 2.dp, color = MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(30.dp),
             colors = ButtonDefaults.buttonColors(
                 containerColor = Color.White,
@@ -523,7 +519,8 @@ fun AddStoryLayout(onClick: () -> Unit) {
             text = "Add Status",
             style = TextStyle(
                 color = Color.White,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.montserrat_bold))
             ),
             modifier = Modifier
         )

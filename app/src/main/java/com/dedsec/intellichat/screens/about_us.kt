@@ -30,6 +30,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -46,11 +47,9 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.navigation.NavHostController
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.viewModel
-import com.dedsec.intellichat.ui.theme.RedNormal
 
 @Composable
 fun About_Us(navHostController: NavHostController, vm: viewModel) {
@@ -61,7 +60,7 @@ fun About_Us(navHostController: NavHostController, vm: viewModel) {
                 modifier = Modifier
                     .safeDrawingPadding()
                     .fillMaxWidth()
-                    .background(RedNormal)
+                    .background(MaterialTheme.colorScheme.secondary)
                     .padding(15.dp),
                 verticalAlignment = Alignment.CenterVertically
             ){
@@ -111,7 +110,7 @@ fun SingleTeammate(@DrawableRes image: Int, name: String, lnkdn: String, context
         modifier = Modifier
             .heightIn(max = 300.dp)
             .widthIn(max = 200.dp)
-            .border(2.dp, RedNormal, RoundedCornerShape(10.dp)),
+            .border(2.dp, MaterialTheme.colorScheme.secondary, RoundedCornerShape(10.dp)),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Image(
@@ -125,7 +124,7 @@ fun SingleTeammate(@DrawableRes image: Int, name: String, lnkdn: String, context
         )
         Text(
             name,
-            color = RedNormal,
+            color = MaterialTheme.colorScheme.secondary,
             style = TextStyle(
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Black
@@ -136,7 +135,7 @@ fun SingleTeammate(@DrawableRes image: Int, name: String, lnkdn: String, context
 
         Text(
             "LinkedIn",
-            color = RedNormal,
+            color = MaterialTheme.colorScheme.secondary,
             style = TextStyle(
                 fontSize = 20.sp,
             ),

@@ -32,6 +32,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Text
@@ -61,11 +62,7 @@ import coil.compose.rememberAsyncImagePainter
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.ProgressionBar
 import com.dedsec.intellichat.components.viewModel
-import com.dedsec.intellichat.ui.theme.RedDark
-import com.dedsec.intellichat.ui.theme.RedLight
-import com.dedsec.intellichat.ui.theme.appNameFont
 import com.dedsec.intellichat.ui.theme.loginFont
-import com.dedsec.intellichat.ui.theme.welcomeFont
 
 @Composable
 fun ProfileScreen(navHostController: NavHostController, vm: viewModel) {
@@ -141,7 +138,7 @@ fun UserContact(phonenumber: MutableState<String>) {
                 contentColor = Color.Black,
                 containerColor = Color.Transparent
             ),
-            border = BorderStroke(2.5.dp, RedDark),
+            border = BorderStroke(2.5.dp, MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(30)
         ) {
             TextField(
@@ -181,7 +178,7 @@ fun UserName(name: MutableState<String>) {
             colors = CardDefaults.cardColors(
                 contentColor = Color.Black, containerColor = Color.White
             ),
-            border = BorderStroke(2.5.dp, RedDark),
+            border = BorderStroke(2.5.dp, MaterialTheme.colorScheme.primary),
             shape = RoundedCornerShape(30)
         ) {
             TextField(
@@ -253,7 +250,7 @@ fun ProfileImage(imageUrl: String?, vm: viewModel) {
         Row(
             modifier = Modifier
                 .padding(top = 8.dp)
-                .border(2.dp, RedDark, RoundedCornerShape(50))
+                .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(50))
                 .padding(10.dp)
                 .clickable {
                     launcher.launch("image/*")

@@ -28,6 +28,7 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -52,11 +53,6 @@ import androidx.navigation.NavHostController
 import coil.compose.rememberAsyncImagePainter
 import com.dedsec.intellichat.R
 import com.dedsec.intellichat.components.viewModel
-import com.dedsec.intellichat.ui.theme.RedDark
-import com.dedsec.intellichat.ui.theme.RedDark2
-import com.dedsec.intellichat.ui.theme.RedLight
-import com.dedsec.intellichat.ui.theme.RedNormal
-import com.dedsec.intellichat.ui.theme.chatBackgroundColor
 import com.dedsec.intellichat.ui.theme.loginFont
 
 @Composable
@@ -84,7 +80,7 @@ fun ChatScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(RedNormal)
+            .background(MaterialTheme.colorScheme.secondary)
             .safeDrawingPadding()
     ) {
         Row(
@@ -110,7 +106,7 @@ fun ChatScreen(
             Column(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier.padding(vertical = 20.dp)
+                modifier = Modifier.padding(vertical = 5.dp)
             ) {
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
@@ -156,7 +152,7 @@ fun ChatScreen(
             Icon(
                 imageVector = Icons.Default.MoreVert,
                 contentDescription = "MoreVert",
-                tint = RedNormal,
+                tint = MaterialTheme.colorScheme.secondary,
                 modifier = Modifier
                     .padding(end = 20.dp)
                     .size(24.dp)
@@ -169,14 +165,14 @@ fun ChatScreen(
                 .weight(1f)
                 .verticalScroll(scrollState)
                 .clip(RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp))
-                .background(RedLight)
+                .background(color = MaterialTheme.colorScheme.tertiary)
 
         ) {
             vm.chatMessages.value.forEach { msg ->
                 val alignment =
                     if (msg.senderId == vm.userData.value?.userId) Alignment.End else Alignment.Start
                 val color =
-                    if (msg.senderId == vm.userData.value?.userId) RedNormal else Color.White
+                    if (msg.senderId == vm.userData.value?.userId) MaterialTheme.colorScheme.secondary else Color.White
                 val textColor =
                     if(msg.senderId == vm.userData.value?.userId) Color.White else Color.Black
                 Column(
@@ -184,6 +180,14 @@ fun ChatScreen(
                         .fillMaxWidth()
                         .padding(10.dp)
                 ) {
+                    Card(
+                        shape = RoundedCornerShape(topStart = 25.dp, topEnd = 25.dp, bottomStart = 25.dp, bottomEnd = 0.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 30.dp),
+                        colors = CardDefaults.cardColors(
+                            containerColor = Color.Transparent
+                        ),
+                        modifier = Modifier.align(alignment)
+                    ){
                     Text(
                         msg.message ?: "",
                         modifier = Modifier
@@ -194,13 +198,14 @@ fun ChatScreen(
                         fontSize = 18.sp,
                         color = textColor
                     )
+                    }
                 }
 
             }
         }
         Column(
             modifier = Modifier
-                .background(RedLight)
+                .background(color = MaterialTheme.colorScheme.tertiary)
                 .padding(10.dp)
         ) {
             val suggestionList = vm.smartSugestion.observeAsState()
