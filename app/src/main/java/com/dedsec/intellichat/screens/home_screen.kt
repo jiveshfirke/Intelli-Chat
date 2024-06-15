@@ -425,7 +425,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     painter = painterResource(id = R.drawable.ic_user),
                     contentDescription = "Person Profile",
                     modifier = Modifier
-                        .size(45.dp)
+                        .size(55.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
@@ -434,7 +434,7 @@ fun UserRow(chatuser: ChatUser, onClick: () -> Unit) {
                     painter = rememberAsyncImagePainter(model = chatuser.imageUrl),
                     contentDescription = "Person Profile",
                     modifier = Modifier
-                        .size(45.dp)
+                        .size(55.dp)
                         .clip(CircleShape),
                     contentScale = ContentScale.Crop
                 )
@@ -571,7 +571,8 @@ fun UserStoryLayout(name: String?, imageUrl: String?, onClick: () -> Unit) {
             name ?: "",
             style = TextStyle(
                 color = Color.White,
-                fontSize = 14.sp
+                fontSize = 14.sp,
+                fontFamily = FontFamily(Font(R.font.montserrat_bold))
             ),
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
