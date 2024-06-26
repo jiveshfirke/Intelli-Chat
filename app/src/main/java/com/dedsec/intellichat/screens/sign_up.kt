@@ -69,6 +69,7 @@ fun SignUpScreen(
     var name by remember {
         mutableStateOf("")
     }
+    
 
     var phonenumber by remember {
         mutableStateOf("")

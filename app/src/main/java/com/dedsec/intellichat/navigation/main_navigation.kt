@@ -15,6 +15,15 @@ import com.dedsec.intellichat.screens.SignUpScreen
 import com.dedsec.intellichat.screens.SingleStatusScreen
 import com.dedsec.intellichat.screens.StartScreen
 
+const val Start = "start_screen"
+const val Home = "home_screen"
+const val Chat = "chat_screen"
+const val Login = "login_screen"
+const val SignUp = "signup_screen"
+const val Profile = "profile_screen"
+const val Single_Status = "single_status_screen"
+const val About_Us = "about_us"
+
 @Composable
 fun MainNavigation() {
     val vm = hiltViewModel<viewModel>()
@@ -79,11 +88,3 @@ fun MainNavigation() {
     }
 }
 
-const val Start = "start_screen"
-const val Home = "home_screen"
-const val Chat = "chat_screen"
-const val Login = "login_screen"
-const val SignUp = "signup_screen"
-const val Profile = "profile_screen"
-const val Single_Status = "single_status_screen"
-const val About_Us = "about_us"
